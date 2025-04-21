@@ -34,7 +34,7 @@ func main() {
 	}
 
 	// 自动迁移表结构
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Article{})
 
 	// 初始化路由
 	router := gin.Default()
