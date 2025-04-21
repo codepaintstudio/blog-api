@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useUserStore } from '../stores/user'
 
-const baseURL = 'http://network-demo.hub.feashow.cn/api'
+const baseURL = 'https://network-demo.hub.feashow.cn/api'
 
 const instance = axios.create({
     baseURL,

@@ -40,7 +40,7 @@ func main() {
 	router := gin.Default()
 
 	// 设置代理
-	router.SetTrustedProxies([]string{"127.0.0.1"})
+	// router.SetTrustedProxies([]string{"127.0.0.1"})
 
 	// 设置路由
 	routes.SetupRoutes(router, db)
