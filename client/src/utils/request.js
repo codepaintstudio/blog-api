@@ -1,8 +1,7 @@
 import axios from 'axios'
-import router from '../router'
 import { useUserStore } from '../stores/user'
 
-const baseURL = 'http://localhost:7777/api'
+const baseURL = 'http://network-demo.hub.feashow.cn/api'
 
 const instance = axios.create({
     baseURL,
