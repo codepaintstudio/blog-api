@@ -6,6 +6,10 @@
 
 本项目是一个简单的帖子管理系统，实现了用户认证和帖子的基本 CRUD 操作。项目采用前后端分离架构，提供了良好的用户体验和直观的界面设计。
 
+<p align="center">
+  <img src="./client/public/logo.png" alt="Logo" width="100">
+</p>
+
 ## 技术栈
 
 ### 前端
