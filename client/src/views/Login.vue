@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-md w-full bg-white rounded-lg shadow-md overflow-hidden">
+  <div class="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+    <div class="max-w-md w-full bg-[var(--color-canvas-subtle)] border border-[var(--color-border-default)] rounded-lg overflow-hidden">
       <div class="p-6 space-y-6">
-        <h2 class="text-3xl font-bold text-center text-gray-900">登录</h2>
+        <h2 class="text-3xl font-bold text-center text-[var(--color-fg-default)]">登录</h2>
 
         <!-- 错误提示 -->
-        <div v-if="error" class="p-4 bg-red-50 rounded-md">
+        <div v-if="error" class="p-4 bg-[#ff000010] border border-red-500/20 rounded-md">
           <div class="flex">
             <div class="flex-shrink-0">
               <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -13,42 +13,42 @@
               </svg>
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-red-800">{{ error }}</p>
+              <p class="text-sm font-medium text-red-500">{{ error }}</p>
             </div>
           </div>
         </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">邮箱</label>
+            <label for="email" class="block text-sm font-medium text-[var(--color-fg-default)]">邮箱</label>
             <input
               id="email"
               v-model="email"
               type="email"
               required
               :disabled="loading"
-              class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none disabled:bg-gray-50 disabled:text-gray-500"
+              class="mt-1 block w-full rounded-md border bg-[var(--color-canvas-default)] border-[var(--color-border-default)] px-3 py-2 text-[var(--color-fg-default)] focus:border-[var(--color-accent-fg)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-fg)] disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">密码</label>
+            <label for="password" class="block text-sm font-medium text-[var(--color-fg-default)]">密码</label>
             <input
               id="password"
               v-model="password"
               type="password"
               required
               :disabled="loading"
-              class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none disabled:bg-gray-50 disabled:text-gray-500"
+              class="mt-1 block w-full rounded-md border bg-[var(--color-canvas-default)] border-[var(--color-border-default)] px-3 py-2 text-[var(--color-fg-default)] focus:border-[var(--color-accent-fg)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-fg)] disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
           <button
             type="submit"
             :disabled="loading"
-            class="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="btn-primary w-full"
           >
-            <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
@@ -59,7 +59,7 @@
         <div class="text-center">
           <router-link
             to="/register"
-            class="text-sm text-indigo-600 hover:text-indigo-500"
+            class="text-sm text-[var(--color-accent-fg)] hover:text-[var(--color-accent-emphasis)] transition-colors"
           >
             还没有账号？点击注册
           </router-link>

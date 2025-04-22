@@ -1,55 +1,55 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-      <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">注册</h2>
+  <div class="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+    <div class="max-w-md w-full p-6 bg-[var(--color-canvas-subtle)] border border-[var(--color-border-default)] rounded-lg">
+      <h2 class="text-3xl font-bold text-center text-[var(--color-fg-default)] mb-8">注册</h2>
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-700">用户名</label>
+          <label for="username" class="block text-sm font-medium text-[var(--color-fg-default)]">用户名</label>
           <input
             id="username"
             v-model="username"
             type="text"
             required
-            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none"
+            class="mt-1 block w-full rounded-md border bg-[var(--color-canvas-default)] border-[var(--color-border-default)] px-3 py-2 text-[var(--color-fg-default)] focus:border-[var(--color-accent-fg)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-fg)]"
           />
         </div>
         
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">邮箱</label>
+          <label for="email" class="block text-sm font-medium text-[var(--color-fg-default)]">邮箱</label>
           <input
             id="email"
             v-model="email"
             type="email"
             required
-            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none"
+            class="mt-1 block w-full rounded-md border bg-[var(--color-canvas-default)] border-[var(--color-border-default)] px-3 py-2 text-[var(--color-fg-default)] focus:border-[var(--color-accent-fg)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-fg)]"
           />
         </div>
         
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">密码</label>
+          <label for="password" class="block text-sm font-medium text-[var(--color-fg-default)]">密码</label>
           <input
             id="password"
             v-model="password"
             type="password"
             required
-            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none"
+            class="mt-1 block w-full rounded-md border bg-[var(--color-canvas-default)] border-[var(--color-border-default)] px-3 py-2 text-[var(--color-fg-default)] focus:border-[var(--color-accent-fg)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-fg)]"
           />
         </div>
         <div>
-          <label for="re_password" class="block text-sm font-medium text-gray-700">确认密码</label>
+          <label for="re_password" class="block text-sm font-medium text-[var(--color-fg-default)]">确认密码</label>
           <input
             id="re_password"
             v-model="re_password"
             type="password"
             required
-            class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none"
+            class="mt-1 block w-full rounded-md border bg-[var(--color-canvas-default)] border-[var(--color-border-default)] px-3 py-2 text-[var(--color-fg-default)] focus:border-[var(--color-accent-fg)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-fg)]"
           />
         </div>
         
         <div>
           <button
             type="submit"
-            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="btn-primary w-full"
           >
             注册
           </button>
@@ -57,7 +57,7 @@
       </form>
       
       <div class="mt-4 text-center">
-        <router-link to="/login" class="text-sm text-indigo-600 hover:text-indigo-500">
+        <router-link to="/login" class="text-sm text-[var(--color-accent-fg)] hover:text-[var(--color-accent-emphasis)] transition-colors">
           已有账号？点击登录
         </router-link>
       </div>

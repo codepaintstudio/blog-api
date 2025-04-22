@@ -22,17 +22,17 @@ const router = createRouter({
     {
       path: '/article/:id',
       component: () => import('../views/ArticleDetail.vue'),
-      meta: { title: '文章详情' }
+      meta: { title: '帖子详情' }
     },
     {
       path: '/article/create',
       component: () => import('../views/ArticleCreate.vue'),
-      meta: { title: '创建文章', requiresAuth: true }
+      meta: { title: '创建帖子', requiresAuth: true }
     },
     {
       path: '/article/edit/:id',
       component: () => import('../views/ArticleEdit.vue'),
-      meta: { title: '编辑文章', requiresAuth: true }
+      meta: { title: '编辑帖子', requiresAuth: true }
     }
   ]
 })
@@ -40,10 +40,10 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
-  
+
   // 设置页面标题
   document.title = to.meta.title ? `${to.meta.title} - Network Demo` : 'Network Demo'
-  
+
   // 检查是否需要登录
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
     next('/login')

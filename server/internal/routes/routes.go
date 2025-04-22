@@ -27,19 +27,19 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 		user.POST("/login", userController.Login)
 	}
 
-	// 文章相关路由
+	// 帖子相关路由
 	article := api.Group("/articles")
 	{
 		// 公开路由
-		article.GET("", articleController.List)         // 文章列表
-		article.GET("/:id", articleController.GetById)  // 文章详情
+		article.GET("", articleController.List)        // 帖子列表
+		article.GET("/:id", articleController.GetById) // 帖子详情
 
 		// 需要登录的路由
 		auth := article.Group("", middleware.AuthMiddleware())
 		{
-			auth.POST("", articleController.Create)        // 创建文章
-			auth.PUT("/:id", articleController.Update)      // 更新文章
-			auth.DELETE("/:id", articleController.Delete)   // 删除文章
+			auth.POST("", articleController.Create)       // 创建帖子
+			auth.PUT("/:id", articleController.Update)    // 更新帖子
+			auth.DELETE("/:id", articleController.Delete) // 删除帖子
 		}
 	}
 }

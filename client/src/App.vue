@@ -9,15 +9,17 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-[var(--color-canvas-default)]">
     <!-- 导航栏 -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <nav
+      class="bg-[var(--color-canvas-subtle)] border-b border-[var(--color-border-default)] sticky top-0 z-50"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex items-center">
             <router-link
               to="/"
-              class="flex items-center text-xl font-bold text-indigo-600 hover:text-indigo-500 transition-colors"
+              class="flex items-center text-xl font-bold nav-link"
             >
               <svg
                 class="w-8 h-8 mr-2"
@@ -40,16 +42,13 @@ const handleLogout = () => {
                   stroke-linejoin="round"
                 />
               </svg>
-              Network Demo
+              码绘树洞小窝
             </router-link>
           </div>
 
-          <div class="flex items-center space-x-1">
+          <div class="flex items-center space-x-4">
             <template v-if="!userStore.isLoggedIn">
-              <router-link
-                to="/login"
-                class="mr-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-600 bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
+              <router-link to="/login" class="btn-secondary">
                 <svg
                   class="-ml-1 mr-2 h-5 w-5"
                   viewBox="0 0 20 20"
@@ -63,10 +62,7 @@ const handleLogout = () => {
                 </svg>
                 登录
               </router-link>
-              <router-link
-                to="/register"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
+              <router-link to="/register" class="btn-primary">
                 <svg
                   class="-ml-1 mr-2 h-5 w-5"
                   viewBox="0 0 20 20"
@@ -80,10 +76,7 @@ const handleLogout = () => {
               </router-link>
             </template>
             <template v-else>
-              <router-link
-                to="/article/create"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
+              <router-link to="/article/create" class="btn-primary">
                 <svg
                   class="-ml-1 mr-2 h-5 w-5"
                   viewBox="0 0 20 20"
@@ -95,14 +88,11 @@ const handleLogout = () => {
                     clip-rule="evenodd"
                   />
                 </svg>
-                发布文章
+                发布帖子
               </router-link>
-              <button
-                @click="handleLogout"
-                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
+              <button @click="handleLogout" class="btn-secondary">
                 <svg
-                  class="-ml-1 mr-2 h-5 w-5 text-gray-500"
+                  class="-ml-1 mr-2 h-5 w-5"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >

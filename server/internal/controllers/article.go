@@ -20,7 +20,7 @@ func NewArticleController(db *gorm.DB) *ArticleController {
 	}
 }
 
-// Create 创建文章
+// Create 创建帖子
 func (c *ArticleController) Create(ctx *gin.Context) {
 	var request models.CreateArticleRequest
 	if err := ctx.ShouldBindJSON(&request); err != nil {
@@ -38,7 +38,7 @@ func (c *ArticleController) Create(ctx *gin.Context) {
 	ctx.JSON(200, response.SuccessWithMessage("Create article successfully", article))
 }
 
-// Update 更新文章
+// Update 更新帖子
 func (c *ArticleController) Update(ctx *gin.Context) {
 	articleId, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
@@ -66,7 +66,7 @@ func (c *ArticleController) Update(ctx *gin.Context) {
 	ctx.JSON(200, response.SuccessWithMessage("Update article successfully", article))
 }
 
-// Delete 删除文章
+// Delete 删除帖子
 func (c *ArticleController) Delete(ctx *gin.Context) {
 	articleId, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
@@ -88,7 +88,7 @@ func (c *ArticleController) Delete(ctx *gin.Context) {
 	ctx.JSON(200, response.SuccessWithMessage("Delete article successfully", nil))
 }
 
-// GetById 获取文章详情
+// GetById 获取帖子详情
 func (c *ArticleController) GetById(ctx *gin.Context) {
 	articleId, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
@@ -109,7 +109,7 @@ func (c *ArticleController) GetById(ctx *gin.Context) {
 	ctx.JSON(200, response.SuccessWithMessage("Get article successfully", article))
 }
 
-// List 获取文章列表
+// List 获取帖子列表
 func (c *ArticleController) List(ctx *gin.Context) {
 	var request models.ArticleListRequest
 	if err := ctx.ShouldBindQuery(&request); err != nil {

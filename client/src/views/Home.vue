@@ -3,70 +3,66 @@
     <div class="px-4 py-6 sm:px-0">
       <!-- 加载状态 -->
       <div v-if="loading" class="text-center py-12">
-        <p class="text-gray-500">加载中...</p>
+        <p class="text-[var(--color-fg-muted)]">加载中...</p>
       </div>
 
       <!-- 错误状态 -->
       <div v-else-if="error" class="text-center py-12">
         <p class="text-red-500">{{ error }}</p>
-        <button
-          @click="fetchArticles()"
-          class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-        >
-          重试
-        </button>
+        <button @click="fetchArticles()" class="btn-primary mt-4">重试</button>
       </div>
 
       <!-- 空状态 -->
       <div v-else-if="articles.length === 0" class="text-center py-12">
-        <p class="text-gray-500">暂无文章</p>
+        <p class="text-[var(--color-fg-muted)]">暂无帖子</p>
         <router-link
           v-if="isLoggedIn"
           to="/article/create"
-          class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+          class="btn-primary mt-4"
         >
-          发布第一篇文章
+          发布第一篇帖子
         </router-link>
       </div>
 
-      <!-- 文章列表 -->
+      <!-- 帖子列表 -->
       <div v-else class="space-y-6">
         <div
           v-for="article in articles"
           :key="article.id"
-          class="bg-white shadow rounded-lg p-6"
+          class="bg-[var(--color-canvas-subtle)] border border-[var(--color-border-default)] rounded-lg p-6 hover:border-[var(--color-accent-fg)] transition-colors"
         >
           <div class="flex justify-between items-start">
             <div class="flex-1">
-              <h2 class="text-xl font-semibold text-gray-900">
+              <h2 class="text-xl font-semibold text-[var(--color-fg-default)]">
                 <router-link
                   :to="'/article/' + article.id"
-                  class="hover:text-indigo-600"
+                  class="hover:text-[var(--color-accent-fg)] transition-colors"
                 >
                   {{ article.title }}
                 </router-link>
               </h2>
-              <p class="mt-2 text-gray-600 line-clamp-3">
+              <p class="mt-2 text-[var(--color-fg-muted)] line-clamp-3">
                 {{ article.content }}
               </p>
-              <div class="mt-4 flex items-center text-sm text-gray-500">
-                <span>{{ article.author?.name || "未知用户" }}</span>
-                <span class="mx-1">·</span>
-                <span>{{
-                  new Date(article.created_at).toLocaleDateString()
-                }}</span>
+              <div
+                class="mt-4 flex items-center text-sm text-[var(--color-fg-muted)]"
+              >
+                <span>{{ new Date(article.created_at).toLocaleString() }}</span>
               </div>
             </div>
-            <div class="flex space-x-2 ml-4" v-if="isLoggedIn">
+            <div
+              class="flex space-x-4 ml-4"
+              v-if="isLoggedIn && userInfo?.id === article.user_id"
+            >
               <router-link
                 :to="'/article/edit/' + article.id"
-                class="text-indigo-600 hover:text-indigo-900"
+                class="text-[var(--color-accent-fg)] hover:text-[var(--color-accent-emphasis)] transition-colors"
               >
                 编辑
               </router-link>
               <button
                 @click="handleDelete(article.id)"
-                class="text-red-600 hover:text-red-900"
+                class="text-red-500 hover:text-red-400 transition-colors"
               >
                 删除
               </button>
@@ -75,30 +71,27 @@
         </div>
 
         <!-- 分页 -->
-        <div
-          v-if="total > pageSize"
-          class="mt-6 flex justify-between items-center"
-        >
-          <div class="text-sm text-gray-700">共 {{ total }} 篇文章</div>
-          <nav
-            class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-          >
+        <div class="mt-6 flex justify-between items-center">
+          <div class="text-sm text-[var(--color-fg-muted)]">
+            共 {{ total }} 篇帖子
+          </div>
+          <nav class="flex rounded-md -space-x-px">
             <button
               @click="handlePageChange(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="btn-secondary rounded-r-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
               上一页
             </button>
             <div
-              class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+              class="relative inline-flex items-center px-4 py-2 border border-[var(--color-border-default)] bg-[var(--color-canvas-subtle)] text-sm font-medium text-[var(--color-fg-default)]"
             >
               {{ currentPage }} / {{ Math.ceil(total / pageSize) }}
             </div>
             <button
               @click="handlePageChange(currentPage + 1)"
               :disabled="currentPage * pageSize >= total"
-              class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="btn-secondary rounded-l-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
               下一页
             </button>
@@ -111,11 +104,9 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useRouter } from "vue-router";
 import { useUserStore } from "../stores/user";
 import { getArticles, deleteArticle } from "../apis/articles";
 
-const router = useRouter();
 const userStore = useUserStore();
 
 const articles = ref([]);
@@ -126,7 +117,7 @@ const loading = ref(false);
 const error = ref("");
 
 const isLoggedIn = computed(() => userStore.isLoggedIn);
-const currentUser = computed(() => userStore.userInfo);
+const userInfo = computed(() => userStore.userInfo);
 
 const fetchArticles = async (page = 1) => {
   loading.value = true;
@@ -141,7 +132,7 @@ const fetchArticles = async (page = 1) => {
     total.value = count;
     currentPage.value = current;
   } catch (err) {
-    error.value = err.message || "获取文章列表失败";
+    error.value = err.message || "获取帖子列表失败";
   } finally {
     loading.value = false;
   }
@@ -158,7 +149,7 @@ const handlePageChange = (page) => {
 };
 
 const handleDelete = async (id) => {
-  if (confirm("确定要删除这篇文章吗？")) {
+  if (confirm("确定要删除这篇帖子吗？")) {
     try {
       await deleteArticle(id);
       await fetchArticles(currentPage.value);

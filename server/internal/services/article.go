@@ -15,7 +15,7 @@ func NewArticleService(db *gorm.DB) *ArticleService {
 	return &ArticleService{db: db}
 }
 
-// Create 创建文章
+// Create 创建帖子
 func (s *ArticleService) Create(userId int, request *models.CreateArticleRequest) (*models.Article, error) {
 	// 获取用户信息
 	var user models.User
@@ -49,20 +49,20 @@ func (s *ArticleService) Create(userId int, request *models.CreateArticleRequest
 	return &article, nil
 }
 
-// Update 更新文章
+// Update 更新帖子
 func (s *ArticleService) Update(userId int, articleId int, request *models.UpdateArticleRequest) (*models.Article, error) {
-	// 查询文章
+	// 查询帖子
 	var article models.Article
 	if err := s.db.Preload("User").First(&article, articleId).Error; err != nil {
 		return nil, err
 	}
 
-	// 检查文章所有权
+	// 检查帖子所有权
 	if article.UserId != userId {
 		return nil, errors.New("unauthorized to update this article")
 	}
 
-	// 更新文章
+	// 更新帖子
 	article.Title = request.Title
 	article.Content = request.Content
 
@@ -80,14 +80,14 @@ func (s *ArticleService) Update(userId int, articleId int, request *models.Updat
 	return &article, nil
 }
 
-// Delete 删除文章
+// Delete 删除帖子
 func (s *ArticleService) Delete(userId int, articleId int) error {
 	var article models.Article
 	if err := s.db.First(&article, articleId).Error; err != nil {
 		return err
 	}
 
-	// 验证文章所有者
+	// 验证帖子所有者
 	if article.UserId != userId {
 		return errors.New("unauthorized to delete this article")
 	}
@@ -95,7 +95,7 @@ func (s *ArticleService) Delete(userId int, articleId int) error {
 	return s.db.Delete(&article).Error
 }
 
-// GetById 获取文章详情
+// GetById 获取帖子详情
 func (s *ArticleService) GetById(articleId int) (*models.Article, error) {
 	var article models.Article
 	if err := s.db.Preload("User").First(&article, articleId).Error; err != nil {
@@ -112,7 +112,7 @@ func (s *ArticleService) GetById(articleId int) (*models.Article, error) {
 	return &article, nil
 }
 
-// List 获取文章列表
+// List 获取帖子列表
 func (s *ArticleService) List(request *models.ArticleListRequest) (*models.ArticleListResponse, error) {
 	var total int64
 	var articles []models.Article

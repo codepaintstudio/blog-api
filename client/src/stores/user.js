@@ -7,22 +7,22 @@ export const useUserStore = defineStore('user', {
     token: localStorage.getItem('token') || '',
     userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}')
   }),
-  
+
   getters: {
-    isLoggedIn: (state) => !!state.token
+    isLoggedIn: (state) => !!state.token,
   },
-  
+
   actions: {
     setToken(token) {
       this.token = token
       localStorage.setItem('token', token)
     },
-    
+
     setUserInfo(userInfo) {
       this.userInfo = userInfo
       localStorage.setItem('userInfo', JSON.stringify(userInfo))
     },
-    
+
     async login(email, password) {
       try {
         const data = await request.post('/user/login', { email, password })
@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', {
         throw error
       }
     },
-    
+
     async register(username, email, password) {
       try {
         const data = await request.post('/user/register', { username, email, password })
@@ -46,7 +46,7 @@ export const useUserStore = defineStore('user', {
         throw error
       }
     },
-    
+
     logout() {
       this.token = ''
       this.userInfo = {}

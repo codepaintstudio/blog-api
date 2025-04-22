@@ -1,1 +1,38 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+    --color-canvas-default: #0d1117;
+    --color-canvas-subtle: #161b22;
+    --color-border-default: #30363d;
+    --color-accent-fg: #58a6ff;
+    --color-accent-emphasis: #1f6feb;
+    --color-fg-default: #c9d1d9;
+    --color-fg-muted: #8b949e;
+}
+
+body {
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+}
+
+@layer base {
+    :root {
+        --color-primary: 88 166 255;
+        --color-secondary: 139 148 158;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-[#238636] hover:bg-[#2ea043] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#238636] transition-colors;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center px-4 py-2 border border-[#30363d] text-sm font-medium rounded-md text-[#c9d1d9] bg-transparent hover:bg-[#30363d] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#30363d] transition-colors;
+    }
+
+    .nav-link {
+        @apply text-[#c9d1d9] hover:text-[#58a6ff] transition-colors;
+    }
+}
