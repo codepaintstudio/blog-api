@@ -42,7 +42,7 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
 
   // 设置页面标题
-  document.title = to.meta.title ? `${to.meta.title} - Network Demo` : 'Network Demo'
+  document.title = to.meta.title ? `${to.meta.title} - 码绘树洞小窝` : '码绘树洞小窝'
 
   // 检查是否需要登录
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
