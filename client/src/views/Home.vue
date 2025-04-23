@@ -143,7 +143,7 @@ onMounted(() => {
 });
 
 const handlePageChange = (page) => {
-  if (page >= 1 && page * pageSize.value <= total.value) {
+  if (page >= 1 && page <= Math.ceil(total.value / pageSize.value)) {
     fetchArticles(page);
   }
 };
