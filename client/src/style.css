@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@font-face {
+    font-family: 'CustomFont';
+    src: url('./assets/cfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
     --color-canvas-default: #0d1117;
     --color-canvas-subtle: #161b22;
@@ -14,6 +21,7 @@
 body {
     background-color: var(--color-canvas-default);
     color: var(--color-fg-default);
+    font-family: 'CustomFont', system-ui, -apple-system, sans-serif;
 }
 
 @layer base {

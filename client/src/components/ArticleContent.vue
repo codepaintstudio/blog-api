@@ -6,22 +6,22 @@
 </template>
 
 <script setup>
-import { useEditor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import { common, createLowlight } from 'lowlight'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import Link from '@tiptap/extension-link'
+import { useEditor, EditorContent } from "@tiptap/vue-3";
+import StarterKit from "@tiptap/starter-kit";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { common, createLowlight } from "lowlight";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
+import Link from "@tiptap/extension-link";
 
-const lowlight = createLowlight(common)
+const lowlight = createLowlight(common);
 
 const props = defineProps({
   content: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
 const editor = useEditor({
   content: props.content,
@@ -38,11 +38,12 @@ const editor = useEditor({
     Link.configure({
       openOnClick: true,
       HTMLAttributes: {
-        class: 'text-[var(--color-accent-fg)] hover:text-[var(--color-accent-emphasis)] transition-colors'
-      }
+        class:
+          "text-[var(--color-accent-fg)] hover:text-[var(--color-accent-emphasis)] transition-colors",
+      },
     }),
-  ]
-})
+  ],
+});
 </script>
 
 <style>
@@ -114,7 +115,10 @@ const editor = useEditor({
   gap: 0.5rem;
 }
 
-.prose :where(ul[data-type="taskList"] li > div):not(:where([class~="not-prose"] *)) {
+.prose
+  :where(ul[data-type="taskList"] li > div):not(
+    :where([class~="not-prose"] *)
+  ) {
   flex: 1;
 }
 </style>
