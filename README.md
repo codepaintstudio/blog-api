@@ -49,8 +49,10 @@
 - 请求体：
   ```json
   {
-    "email": "user@example.com",
-    "password": "password"
+    "username": "x",
+    "email": "xxx@xxxx.com",
+    "password": "123456",
+    "re_password": "123456"
   }
   ```
 
@@ -61,8 +63,8 @@
 - 请求体：
   ```json
   {
-    "email": "user@example.com",
-    "password": "password"
+    "email": "xxx@xxxx.com",
+    "password": "123456"
   }
   ```
 
@@ -82,7 +84,15 @@
         "content": "帖子内容",
         "user_id": "作者ID",
         "created_at": "创建时间"
-      }
+      },
+      {
+        "id": "article_id",
+        "title": "帖子标题",
+        "content": "帖子内容",
+        "user_id": "作者ID",
+        "created_at": "创建时间"
+      },
+      ...
     ]
   }
   ```
