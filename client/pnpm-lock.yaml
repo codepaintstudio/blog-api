@@ -38,6 +38,9 @@ importers:
       gh-pages:
         specifier: ^6.3.0
         version: 6.3.0
+      highlight.js:
+        specifier: ^11.11.1
+        version: 11.11.1
       lowlight:
         specifier: ^3.3.0
         version: 3.3.0

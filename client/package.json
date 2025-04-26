@@ -21,6 +21,7 @@
     "@tiptap/vue-3": "^2.11.7",
     "axios": "^1.8.4",
     "gh-pages": "^6.3.0",
+    "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
     "pinia": "^3.0.2",
     "shiki": "^3.3.0",
