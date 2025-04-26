@@ -9,8 +9,8 @@
 }
 
 :root {
-    --color-canvas-default: #0d1117;
-    --color-canvas-subtle: #161b22;
+    --color-canvas-default: #fff;
+    --color-canvas-subtle: #fff;
     --color-border-default: #30363d;
     --color-accent-fg: #58a6ff;
     --color-accent-emphasis: #1f6feb;
@@ -26,21 +26,21 @@ body {
 
 @layer base {
     :root {
-        --color-primary: 88 166 255;
+        --color-primary: 31 128 255;
         --color-secondary: 139 148 158;
     }
 }
 
 @layer components {
     .btn-primary {
-        @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-[#238636] hover:bg-[#2ea043] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#238636] transition-colors;
+        @apply duration-300 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium text-white bg-[#1f80ff] hover:bg-white hover:text-[#1f80ff] hover:border-[#1f80ff] focus:outline-none shadow-sm transition-colors;
     }
 
     .btn-secondary {
-        @apply inline-flex items-center px-4 py-2 border border-[#30363d] text-sm font-medium rounded-md text-[#c9d1d9] bg-transparent hover:bg-[#30363d] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#30363d] transition-colors;
+        @apply duration-300 inline-flex items-center px-4 py-2 border border-[#1f6feb] text-sm font-medium text-[#1f6feb] bg-transparent hover:bg-[#1f6feb] hover:text-white focus:outline-none shadow-sm transition-colors;
     }
 
     .nav-link {
-        @apply text-[#c9d1d9] hover:text-[#58a6ff] transition-colors;
+        @apply duration-300 text-[#1f6feb] hover:text-[#58a6ff] transition-colors;
     }
 }

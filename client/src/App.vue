@@ -1,25 +1,23 @@
 <script setup>
-import { useUserStore } from "./stores/user";
+import { useUserStore } from './stores/user'
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const handleLogout = () => {
-  userStore.logout();
-};
+  userStore.logout()
+}
 </script>
 
 <template>
   <div class="min-h-screen bg-[var(--color-canvas-default)]">
     <!-- 导航栏 -->
-    <nav
-      class="bg-[var(--color-canvas-subtle)] border-b border-[var(--color-border-default)] sticky top-0 z-50"
-    >
+    <nav class="bg-[var(--color-canvas-subtle)] shadow sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex items-center">
             <router-link
               to="/"
-              class="flex items-center text-xl font-bold nav-link"
+              class="flex items-center text-xl font-bold nav-link text-[var(--color-accent-emphasis)]"
             >
               <svg
                 class="w-8 h-8 mr-2"
@@ -49,11 +47,7 @@ const handleLogout = () => {
           <div class="flex items-center space-x-4">
             <template v-if="!userStore.isLoggedIn">
               <router-link to="/login" class="btn-secondary">
-                <svg
-                  class="-ml-1 mr-2 h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
+                <svg class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     fill-rule="evenodd"
                     d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
@@ -63,11 +57,7 @@ const handleLogout = () => {
                 登录
               </router-link>
               <router-link to="/register" class="btn-primary">
-                <svg
-                  class="-ml-1 mr-2 h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
+                <svg class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"
                   />
@@ -77,11 +67,7 @@ const handleLogout = () => {
             </template>
             <template v-else>
               <router-link to="/article/create" class="btn-primary">
-                <svg
-                  class="-ml-1 mr-2 h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
+                <svg class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     fill-rule="evenodd"
                     d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
@@ -91,11 +77,7 @@ const handleLogout = () => {
                 发布帖子
               </router-link>
               <button @click="handleLogout" class="btn-secondary">
-                <svg
-                  class="-ml-1 mr-2 h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
+                <svg class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
                     fill-rule="evenodd"
                     d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
