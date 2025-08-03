@@ -228,10 +228,7 @@ curl -X DELETE https://network-demo.hub.feashow.cn/api/articles/1 \
 - 使用 JWT 进行用户认证
 - 帖子编辑和删除操作需要验证用户身份和所有权
 - 密码加密存储
-
-## 部署信息
-
-后端服务已经完成部署，BaseURL: https://network-demo.hub.feashow.cn/
+- 错误处理和日志记录
 
 ## 其他：
 
