@@ -159,10 +159,7 @@
 
 ## 部署信息
 
-后端服务已经完成部署，前端项目可以直接连接使用。
-
-- 部署地址：https://network-client.hub.feashow.cn
-- API 基础 URL：https://doc.apipost.net/docs/44a33117dce0000?locale=zh-cn
+后端服务已经完成部署，BaseURL: https://network-demo.hub.feashow.cn/
 
 ## 其他：
 
