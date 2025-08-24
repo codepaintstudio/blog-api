@@ -24,8 +24,20 @@ profile.cov
 go.work
 go.work.sum
 
-# env file
+# Configuration files with sensitive data
 .env
+configs/config.yaml
+
+# Log files
+logs/
+*.log
+
+# Uploaded files
+uploads/
+
+# Temporary files
+tmp/
+temp/
 
 # Editor/IDE
 # .idea/
