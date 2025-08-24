@@ -1,12 +1,13 @@
 package response
 
 const (
-	StatusSuccess       = 200
-	StatusBadRequest    = 400
-	StatusUnauthorized  = 401
-	StatusForbidden     = 403
-	StatusNotFound      = 404
-	StatusInternalError = 500
+	StatusSuccess         = 200
+	StatusBadRequest      = 400
+	StatusUnauthorized    = 401
+	StatusForbidden       = 403
+	StatusNotFound        = 404
+	StatusTooManyRequests = 429
+	StatusInternalError   = 500
 )
 
 type Response struct {
