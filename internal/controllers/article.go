@@ -133,3 +133,14 @@ func (c *ArticleController) List(ctx *gin.Context) {
 
 	ctx.JSON(200, response.SuccessWithMessage("Get articles successfully", data))
 }
+
+// GetStats 获取文章统计信息
+func (c *ArticleController) GetStats(ctx *gin.Context) {
+	stats, err := c.articleService.GetStats()
+	if err != nil {
+		ctx.JSON(500, response.Error(response.StatusInternalError, err.Error()))
+		return
+	}
+
+	ctx.JSON(200, response.SuccessWithMessage("Get stats successfully", stats))
+}

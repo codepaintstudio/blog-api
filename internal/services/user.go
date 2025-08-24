@@ -93,3 +93,46 @@ func (s *UserService) Login(request *models.LoginRequest) (*models.LoginResponse
 		},
 	}, nil
 }
+
+// GetUserById 根据用户ID获取用户信息
+func (s *UserService) GetUserById(userId int) (*models.BaseUser, error) {
+	var user models.User
+	if err := s.db.First(&user, userId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("user not found")
+		}
+		return nil, err
+	}
+
+	return &models.BaseUser{
+		Id:       user.Id,
+		Username: user.Username,
+		Email:    user.Email,
+	}, nil
+}
+
+// GetUserDetail 获取用户详情（包含文章统计）
+func (s *UserService) GetUserDetail(userId int) (*models.UserDetailResponse, error) {
+	var user models.User
+	if err := s.db.First(&user, userId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("user not found")
+		}
+		return nil, err
+	}
+
+	// 统计用户文章数
+	var articleCount int64
+	if err := s.db.Model(&models.Article{}).Where("user_id = ?", userId).Count(&articleCount).Error; err != nil {
+		return nil, err
+	}
+
+	return &models.UserDetailResponse{
+		BaseUser: models.BaseUser{
+			Id:       user.Id,
+			Username: user.Username,
+			Email:    user.Email,
+		},
+		ArticleCount: int(articleCount),
+	}, nil
+}

@@ -112,20 +112,51 @@ func (s *ArticleService) GetById(articleId int) (*models.Article, error) {
 	return &article, nil
 }
 
-// List 获取帖子列表
+// List 获取帖子列表（支持搜索、排序、过滤）
 func (s *ArticleService) List(request *models.ArticleListRequest) (*models.ArticleListResponse, error) {
 	var total int64
 	var articles []models.Article
 
 	offset := (request.Page - 1) * request.Size
 
+	// 构建查询条件
+	query := s.db.Model(&models.Article{})
+	countQuery := s.db.Model(&models.Article{})
+
+	// 搜索功能：按标题或内容搜索
+	if request.Search != "" {
+		searchCondition := "title LIKE ? OR content LIKE ?"
+		searchValue := "%" + request.Search + "%"
+		query = query.Where(searchCondition, searchValue, searchValue)
+		countQuery = countQuery.Where(searchCondition, searchValue, searchValue)
+	}
+
+	// 按用户ID过滤
+	if request.UserId > 0 {
+		query = query.Where("user_id = ?", request.UserId)
+		countQuery = countQuery.Where("user_id = ?", request.UserId)
+	}
+
 	// 获取总数
-	if err := s.db.Model(&models.Article{}).Count(&total).Error; err != nil {
+	if err := countQuery.Count(&total).Error; err != nil {
 		return nil, err
 	}
 
+	// 构建排序
+	orderBy := "created_at desc" // 默认排序
+	if request.SortBy != "" {
+		switch request.SortBy {
+		case "created_at", "updated_at", "title":
+			order := "desc"
+			if request.Order == "asc" {
+				order = "asc"
+			}
+			orderBy = request.SortBy + " " + order
+		}
+	}
+
 	// 获取分页数据
-	if err := s.db.Preload("User").Order("created_at desc").Offset(offset).Limit(request.Size).Find(&articles).Error; err != nil {
+	if err := query.Preload("User").Order(orderBy).Offset(offset).Limit(request.Size).Find(&articles).Error; err != nil {
 		return nil, err
 	}
 
@@ -145,5 +176,26 @@ func (s *ArticleService) List(request *models.ArticleListRequest) (*models.Artic
 		Total:    int(total),
 		Page:     request.Page,
 		Size:     request.Size,
+	}, nil
+}
+
+// GetStats 获取文章统计信息
+func (s *ArticleService) GetStats() (*models.ArticleStatsResponse, error) {
+	var totalArticles int64
+	var totalUsers int64
+
+	// 统计文章总数
+	if err := s.db.Model(&models.Article{}).Count(&totalArticles).Error; err != nil {
+		return nil, err
+	}
+
+	// 统计用户总数
+	if err := s.db.Model(&models.User{}).Count(&totalUsers).Error; err != nil {
+		return nil, err
+	}
+
+	return &models.ArticleStatsResponse{
+		TotalArticles: int(totalArticles),
+		TotalUsers:    int(totalUsers),
 	}, nil
 }

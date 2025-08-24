@@ -33,3 +33,15 @@ type LoginResponse struct {
 	Token string   `json:"token"`
 	User  BaseUser `json:"user"`
 }
+
+// 用户详情response（包含文章统计）
+type UserDetailResponse struct {
+	BaseUser
+	ArticleCount int `json:"article_count"`
+}
+
+// 文章统计response
+type ArticleStatsResponse struct {
+	TotalArticles int `json:"total_articles"`
+	TotalUsers    int `json:"total_users"`
+}

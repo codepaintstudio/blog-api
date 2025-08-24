@@ -35,8 +35,12 @@ type UpdateArticleRequest struct {
 
 // 帖子列表request
 type ArticleListRequest struct {
-	Page int `form:"page"`
-	Size int `form:"size"`
+	Page     int    `form:"page"`
+	Size     int    `form:"size"`
+	Search   string `form:"search"`   // 搜索关键词（标题或内容）
+	UserId   int    `form:"user_id"`  // 按用户ID过滤
+	SortBy   string `form:"sort_by"`  // 排序字段: created_at, updated_at, title
+	Order    string `form:"order"`    // 排序方向: asc, desc
 }
 
 // 帖子列表response
