@@ -1716,7 +1716,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 创建新的文章分类
+      description: 创建新的文章分类（仅限管理员）
       parameters:
       - description: 分类信息
         in: body
@@ -1744,6 +1744,10 @@ paths:
           description: 未授权
           schema:
             $ref: '#/definitions/response.Response'
+        "403":
+          description: 需要管理员权限
+          schema:
+            $ref: '#/definitions/response.Response'
         "500":
           description: 服务器错误
           schema:
@@ -1757,7 +1761,7 @@ paths:
     delete:
       consumes:
       - application/json
-      description: 删除指定的分类
+      description: 删除指定的分类（需要管理员权限）
       parameters:
       - description: 分类ID
         in: path
@@ -1777,6 +1781,10 @@ paths:
             $ref: '#/definitions/response.Response'
         "401":
           description: 未授权
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: 权限不足，需要管理员权限
           schema:
             $ref: '#/definitions/response.Response'
         "404":
@@ -1832,7 +1840,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: 更新分类信息
+      description: 更新分类信息（需要管理员权限）
       parameters:
       - description: 分类ID
         in: path
@@ -1863,6 +1871,10 @@ paths:
             $ref: '#/definitions/response.Response'
         "401":
           description: 未授权
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: 权限不足，需要管理员权限
           schema:
             $ref: '#/definitions/response.Response'
         "404":

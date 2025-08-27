@@ -1438,7 +1438,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "创建新的文章分类",
+                "description": "创建新的文章分类（仅限管理员）",
                 "consumes": [
                     "application/json"
                 ],
@@ -1487,6 +1487,12 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "未授权",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "需要管理员权限",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1611,7 +1617,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "更新分类信息",
+                "description": "更新分类信息（需要管理员权限）",
                 "consumes": [
                     "application/json"
                 ],
@@ -1671,6 +1677,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/response.Response"
                         }
                     },
+                    "403": {
+                        "description": "权限不足，需要管理员权限",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
                     "404": {
                         "description": "分类不存在",
                         "schema": {
@@ -1691,7 +1703,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "删除指定的分类",
+                "description": "删除指定的分类（需要管理员权限）",
                 "consumes": [
                     "application/json"
                 ],
@@ -1726,6 +1738,12 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "未授权",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "权限不足，需要管理员权限",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }

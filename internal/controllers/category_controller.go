@@ -25,7 +25,7 @@ func NewCategoryController(categoryService services.CategoryService) *CategoryCo
 
 // Create 创建分类
 // @Summary 创建分类
-// @Description 创建新的文章分类
+// @Description 创建新的文章分类（仅限管理员）
 // @Tags 分类
 // @Accept json
 // @Produce json
@@ -34,6 +34,7 @@ func NewCategoryController(categoryService services.CategoryService) *CategoryCo
 // @Success 201 {object} response.Response{data=services.CategoryResponse} "创建成功"
 // @Failure 400 {object} response.Response "请求参数错误"
 // @Failure 401 {object} response.Response "未授权"
+// @Failure 403 {object} response.Response "需要管理员权限"
 // @Failure 500 {object} response.Response "服务器错误"
 // @Router /categories [post]
 func (cc *CategoryController) Create(c *gin.Context) {
@@ -133,7 +134,7 @@ func (cc *CategoryController) GetByID(c *gin.Context) {
 
 // Update 更新分类
 // @Summary 更新分类
-// @Description 更新分类信息
+// @Description 更新分类信息（需要管理员权限）
 // @Tags 分类
 // @Accept json
 // @Produce json
@@ -143,6 +144,7 @@ func (cc *CategoryController) GetByID(c *gin.Context) {
 // @Success 200 {object} response.Response{data=services.CategoryResponse} "更新成功"
 // @Failure 400 {object} response.Response "请求参数错误"
 // @Failure 401 {object} response.Response "未授权"
+// @Failure 403 {object} response.Response "权限不足，需要管理员权限"
 // @Failure 404 {object} response.Response "分类不存在"
 // @Failure 500 {object} response.Response "服务器错误"
 // @Router /categories/{id} [put]
@@ -200,7 +202,7 @@ func (cc *CategoryController) Update(c *gin.Context) {
 
 // Delete 删除分类
 // @Summary 删除分类
-// @Description 删除指定的分类
+// @Description 删除指定的分类（需要管理员权限）
 // @Tags 分类
 // @Accept json
 // @Produce json
@@ -209,6 +211,7 @@ func (cc *CategoryController) Update(c *gin.Context) {
 // @Success 200 {object} response.Response "删除成功"
 // @Failure 400 {object} response.Response "请求参数错误"
 // @Failure 401 {object} response.Response "未授权"
+// @Failure 403 {object} response.Response "权限不足，需要管理员权限"
 // @Failure 404 {object} response.Response "分类不存在"
 // @Failure 500 {object} response.Response "服务器错误"
 // @Router /categories/{id} [delete]

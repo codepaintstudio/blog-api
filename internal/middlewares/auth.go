@@ -6,7 +6,7 @@ import (
 	"blog-api/internal/utils"
 	"blog-api/pkg/logger"
 	"blog-api/pkg/response"
-	
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,7 +36,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		
+
 		// 检查Bearer前缀
 		if !strings.HasPrefix(authHeader, BearerPrefix) {
 			logger.Warn("无效的Authorization头格式",
@@ -48,7 +48,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		
+
 		// 提取token
 		tokenString := strings.TrimPrefix(authHeader, BearerPrefix)
 		if tokenString == "" {
@@ -56,7 +56,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		
+
 		// 解析token
 		claims, err := utils.ParseToken(tokenString)
 		if err != nil {
@@ -71,36 +71,36 @@ func AuthMiddleware() gin.HandlerFunc {
 			default:
 				message = "无效的token"
 			}
-			
+
 			logger.Warn("token验证失败",
 				logger.String("error", err.Error()),
 				logger.String("path", c.Request.URL.Path),
 				logger.String("ip", c.ClientIP()),
 			)
-			
+
 			response.ErrorWithMessage(c, response.UNAUTHORIZED, message)
 			c.Abort()
 			return
 		}
-		
+
 		// 验证token类型
 		if claims.Type != "access" {
 			response.ErrorWithMessage(c, response.UNAUTHORIZED, "无效的token类型")
 			c.Abort()
 			return
 		}
-		
+
 		// 将用户信息存储到上下文中
 		c.Set(UserIDKey, claims.UserID)
 		c.Set(UsernameKey, claims.Username)
 		c.Set(UserRoleKey, claims.Role)
-		
+
 		logger.Debug("用户认证成功",
 			logger.Int("user_id", int(claims.UserID)),
 			logger.String("username", claims.Username),
 			logger.String("role", claims.Role),
 		)
-		
+
 		c.Next()
 	}
 }
@@ -113,31 +113,31 @@ func OptionalAuthMiddleware() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		
+
 		if !strings.HasPrefix(authHeader, BearerPrefix) {
 			c.Next()
 			return
 		}
-		
+
 		tokenString := strings.TrimPrefix(authHeader, BearerPrefix)
 		if tokenString == "" {
 			c.Next()
 			return
 		}
-		
+
 		// 尝试解析token，失败则继续，不阻止请求
 		claims, err := utils.ParseToken(tokenString)
 		if err != nil {
 			c.Next()
 			return
 		}
-		
+
 		if claims.Type == "access" {
 			c.Set(UserIDKey, claims.UserID)
 			c.Set(UsernameKey, claims.Username)
 			c.Set(UserRoleKey, claims.Role)
 		}
-		
+
 		c.Next()
 	}
 }
@@ -145,25 +145,74 @@ func OptionalAuthMiddleware() gin.HandlerFunc {
 // AdminAuthMiddleware 管理员认证中间件
 func AdminAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 先执行普通认证
-		AuthMiddleware()(c)
-		
-		// 如果认证失败，直接返回
-		if c.IsAborted() {
-			return
-		}
-		
-		// 检查用户角色
-		role, exists := c.Get(UserRoleKey)
-		if !exists {
+		authHeader := c.GetHeader(AuthHeader)
+		if authHeader == "" {
+			logger.Warn("缺少Authorization头",
+				logger.String("path", c.Request.URL.Path),
+				logger.String("ip", c.ClientIP()),
+			)
 			response.Error(c, response.UNAUTHORIZED)
 			c.Abort()
 			return
 		}
-		
-		if role != "admin" {
+
+		// 检查Bearer前缀
+		if !strings.HasPrefix(authHeader, BearerPrefix) {
+			logger.Warn("无效的Authorization头格式",
+				logger.String("header", authHeader),
+				logger.String("path", c.Request.URL.Path),
+				logger.String("ip", c.ClientIP()),
+			)
+			response.ErrorWithMessage(c, response.UNAUTHORIZED, "无效的token格式")
+			c.Abort()
+			return
+		}
+
+		// 提取token
+		tokenString := strings.TrimPrefix(authHeader, BearerPrefix)
+		if tokenString == "" {
+			response.ErrorWithMessage(c, response.UNAUTHORIZED, "token不能为空")
+			c.Abort()
+			return
+		}
+
+		// 解析token
+		claims, err := utils.ParseToken(tokenString)
+		if err != nil {
+			var message string
+			switch err {
+			case utils.ErrTokenExpired:
+				message = "token已过期"
+			case utils.ErrTokenNotValidYet:
+				message = "token尚未生效"
+			case utils.ErrTokenMalformed:
+				message = "token格式错误"
+			default:
+				message = "无效的token"
+			}
+
+			logger.Warn("token验证失败",
+				logger.String("error", err.Error()),
+				logger.String("path", c.Request.URL.Path),
+				logger.String("ip", c.ClientIP()),
+			)
+
+			response.ErrorWithMessage(c, response.UNAUTHORIZED, message)
+			c.Abort()
+			return
+		}
+
+		// 验证token类型
+		if claims.Type != "access" {
+			response.ErrorWithMessage(c, response.UNAUTHORIZED, "无效的token类型")
+			c.Abort()
+			return
+		}
+
+		// 检查用户角色（在设置上下文之前检查）
+		if claims.Role != "admin" {
 			logger.Warn("非管理员尝试访问管理员接口",
-				logger.String("role", role.(string)),
+				logger.String("role", claims.Role),
 				logger.String("path", c.Request.URL.Path),
 				logger.String("ip", c.ClientIP()),
 			)
@@ -171,7 +220,18 @@ func AdminAuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		
+
+		// 将用户信息存储到上下文中
+		c.Set(UserIDKey, claims.UserID)
+		c.Set(UsernameKey, claims.Username)
+		c.Set(UserRoleKey, claims.Role)
+
+		logger.Debug("管理员认证成功",
+			logger.Int("user_id", int(claims.UserID)),
+			logger.String("username", claims.Username),
+			logger.String("role", claims.Role),
+		)
+
 		c.Next()
 	}
 }
@@ -182,7 +242,7 @@ func GetCurrentUserID(c *gin.Context) (uint, bool) {
 	if !exists {
 		return 0, false
 	}
-	
+
 	id, ok := userID.(uint)
 	return id, ok
 }
@@ -193,7 +253,7 @@ func GetCurrentUsername(c *gin.Context) (string, bool) {
 	if !exists {
 		return "", false
 	}
-	
+
 	name, ok := username.(string)
 	return name, ok
 }
@@ -204,7 +264,7 @@ func GetCurrentUserRole(c *gin.Context) (string, bool) {
 	if !exists {
 		return "", false
 	}
-	
+
 	r, ok := role.(string)
 	return r, ok
 }
