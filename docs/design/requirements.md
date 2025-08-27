@@ -1,293 +1,284 @@
-# Blog API 产品设计文档
+# Blog API 产品规格
 
-## 1. 项目概述
+## 项目概述
 
-### 1.1 项目目标
+博客后端 API，为前端开发者提供完整的练习接口。已实现所有核心功能，包含 42 个 API 接口。
 
-搭建一套免费的 Blog API 服务，主要面向前端开发学习者，通过提供完整的博客后端接口，帮助前端开发者练习和提升开发技能。
+**目标用户**：前端开发学习者、学生、初级开发者  
+**项目状态**：✅ 已完成并可投入使用
 
-### 1.2 目标用户
+## 功能模块
 
-- **主要用户**：前端开发学习者、学生、初级开发者
-- **系统管理员**：项目维护团队
+### 用户系统
 
-## 2. 用户角色定义
+- 邮箱注册登录，JWT 认证
+- 用户资料管理，密码修改
+- 系统管理员自动初始化
+- 用户状态管理（活跃/禁用）
 
-### 2.1 系统管理员 (sys-admin)
+### 内容管理
 
-- **身份**：系统维护者和管理者
-- **职责**：
-  - 系统运维和监控
-  - 用户数据管理和维护
-  - 系统配置和安全策略管理
-  - 异常用户行为处理
+- 文章 CRUD，支持草稿/发布状态
+- 文章分类系统，用户自定义分类
+- 文章搜索，支持标题和内容搜索
+- 文件上传，支持图片去重机制
 
-### 2.2 普通用户 (user)
+### 互动功能
 
-- **身份**：前端开发学习者
-- **职责**：
-  - 创建和管理个人博客内容
-  - 学习和实践前端开发技能
-
-## 3. 功能需求
-
-### 3.1 用户管理模块
-
-#### 3.1.1 用户注册
-
-- 支持邮箱注册
-- 用户名唯一性验证
-- 密码强度要求
-- 邮箱验证机制
-
-#### 3.1.2 用户登录
-
-- 邮箱/用户名登录
-- JWT Token 认证
-- 登录失败次数限制
-- 记住登录状态
-
-#### 3.1.3 用户资料管理
-
-- 修改基本信息（昵称、简介、邮箱等）
-- 头像上传和修改
-- 密码修改
-- 账号注销
-
-### 3.2 文章管理模块
-
-#### 3.2.1 文章发布
-
-- **基本信息**：
-  - 标题
-  - 内容（支持 Markdown）
-  - 描述/摘要
-  - 封面图片
-  - 发布时间
-  - 更新时间
-
-#### 3.2.2 文章分类
-
-- 用户自定义分类
-- 分类的增删改查
-- 文章与分类的关联
-
-#### 3.2.3 文章管理
-
-- 草稿/发布状态切换
-- 可见性控制（公开/私有）
-- 文章编辑和删除
-- 文章列表查看
-
-#### 3.2.4 文章公开浏览
-
-- 公开文章列表展示
-- 文章详情页面
-- 浏览量统计和展示
-- 按分类筛选文章
-- 文章搜索功能
-- 文章排序（最新、最热、浏览量、点赞数）
-
-#### 3.2.5 文章互动功能
-
-- **文章点赞**：
-
-  - 用户可以对文章点赞/取消点赞
-  - 点赞数统计和展示
-  - 每个用户对每篇文章只能点赞一次
-  - 支持游客查看点赞数，但不能点赞
-
-- **文章收藏**：
-  - 用户可以收藏喜欢的文章
-  - 收藏夹功能，用户可以创建多个收藏夹
-  - 收藏数统计和展示
-  - 收藏列表管理（查看、删除收藏）
-  - 支持收藏分类整理
-
-### 3.3 用户个人中心模块
-
-#### 3.3.1 我的收藏
-
-- 查看收藏的文章列表
-- 按收藏夹分类查看
-- 收藏夹管理（创建、重命名、删除）
-- 收藏文章的搜索和排序
-- 批量管理收藏
-
-#### 3.3.2 我的点赞
-
-- 查看点赞过的文章列表
-- 按时间排序查看点赞历史
-- 取消点赞功能
-
-### 3.4 分类管理模块
-
-- 创建自定义分类
-- 分类名称和描述
-- 分类的增删改查
-- 分类下文章统计
-
-### 3.5 评论互动模块
-
-#### 3.4.1 评论功能
-
-- 文章评论发布
-- 评论列表展示
-- 评论回复功能（支持多级回复）
+- 文章点赞系统，防重复点赞
+- 收藏夹管理，支持多个收藏夹
+- 多级评论系统，支持 3 级嵌套回复
 - 评论点赞功能
-- 评论举报功能
 
-#### 3.4.2 评论管理
+### 系统管理
 
-- 用户管理自己的评论
-- 文章作者管理文章评论
-- 评论删除功能
-- 评论审核机制
-
-### 3.6 系统管理模块
-
-#### 3.6.1 用户管理
-
-- 查看所有用户信息
-- 用户状态管理（启用/禁用）
-- 用户数据统计
-- 异常用户处理
-
-#### 3.6.2 内容管理
-
-- 查看所有文章内容
+- 用户数据管理和统计
 - 内容审核和管理
-- 违规内容处理
-- 内容统计分析
+- 系统数据统计
+- 管理员权限控制
 
-#### 3.6.3 评论管理
+## 技术特性
 
-- 查看所有评论内容
-- 评论审核和管理
-- 违规评论处理
-- 评论统计分析
+### 安全防护
 
-## 4. 非功能性需求
+- 接口限流（IP 级别和用户级别）
+- JWT Token 认证
+- 密码 bcrypt 加密
+- 参数验证和数据校验
+- CORS 跨域配置
 
-### 4.1 性能需求
+### 性能优化
 
-- API 响应时间 < 500ms
-- 支持并发用户数：1000+
-- 文件上传大小限制：10MB
+- Redis 缓存支持
+- 数据库连接池
+- 查询优化和索引
+- 文件去重机制
 
-### 4.2 安全需求
+### 系统特性
 
-- 接口防刷机制
-- 用户认证和授权
-- 数据加密存储
-- SQL 注入防护
-- XSS 攻击防护
+- 配置文件管理（YAML）
+- 结构化日志系统
+- 优雅关闭机制
+- 完整的 API 文档（Swagger）
 
-### 4.3 可用性需求
+## 数据模型
 
-- 系统可用性 99%+
-- 友好的错误提示
-- 完善的 API 文档
-- 规范的 HTTP 状态码
+### 核心表结构
 
-## 5. 数据模型
-
-### 5.1 用户表 (users)
+**用户表 (users)**
 
 ```
-- id: 用户ID
-- username: 用户名
-- email: 邮箱
+id, username, email, password, nickname, avatar, bio
+role(admin/user), status(active/inactive)
+created_at, updated_at
+```
+
+**文章表 (articles)**
+
+```
+id, user_id, title, content, description, cover_image
+category_id, status(draft/published), visibility(public/private)
+view_count, like_count, favorite_count
+created_at, updated_at
+```
+
+**分类表 (categories)**
+
+```
+id, user_id, name, description
+created_at, updated_at
+```
+
+**评论表 (comments)**
+
+```
+id, article_id, user_id, parent_id, content
+like_count, status(published/hidden/deleted)
+created_at, updated_at
+```
+
+**互动表**
+
+- article_likes: 文章点赞记录
+- comment_likes: 评论点赞记录
+- favorite_folders: 收藏夹
+- article_favorites: 文章收藏记录
+- files: 文件管理
+
+## API 接口
+
+### 接口概览
+
+- **认证接口**：3 个（注册、登录、刷新）
+- **用户接口**：3 个（资料查看、更新、密码）
+- **文章接口**：6 个（CRUD、搜索、列表）
+- **分类接口**：6 个（CRUD、列表、统计）
+- **文件接口**：4 个（上传、列表、详情、删除）
+- **评论接口**：8 个（CRUD、回复、审核、管理）
+- **点赞接口**：4 个（文章点赞、评论点赞、历史）
+- **收藏接口**：8 个（收藏夹、收藏管理、状态）
+
+### 业务规则
+
+- 用户只能管理自己的内容
+- 文章作者可以管理文章评论
+- 管理员拥有全局管理权限
+- 每用户每文章只能点赞一次
+- 收藏支持分文件夹组织
+
+## 技术要求
+
+### 环境依赖
+
+- Go 1.19+
+- MySQL 8.0+
+- Redis 6.0+
+
+### 性能指标
+
+- API 响应时间 < 500ms
+- 支持并发用户：1000+
+- 文件上传限制：10MB
+- 系统可用性：99%+
+
+### 安全要求
+
+- JWT Token 过期机制
+- 接口防刷保护
+- SQL 注入防护
+- XSS 攻击防护
+- 数据加密存储
+
+## 部署说明
+
+### 快速启动
+
+```bash
+# 安装依赖
+go mod download
+
+# 配置文件
+cp configs/config.example.yaml configs/config.yaml
+
+# 启动服务
+go run cmd/server/main.go
+```
+
+### 访问地址
+
+- API 服务：http://localhost:8080
+- 接口文档：http://localhost:8080/swagger/index.html
+- 健康检查：http://localhost:8080/api/v1/health
+
+---
+
+**项目已完成所有核心功能，可直接用于前端开发练习。**
+
 - password: 密码（加密）
 - nickname: 昵称
-- avatar: 头像URL
+- avatar: 头像 URL
 - bio: 个人简介
 - role: 角色（admin/user）
 - status: 状态（active/inactive）
 - created_at: 创建时间
 - updated_at: 更新时间
+
 ```
 
 ### 5.2 文章表 (articles)
 
 ```
-- id: 文章ID
-- user_id: 作者ID
+
+- id: 文章 ID
+- user_id: 作者 ID
 - title: 标题
 - content: 内容
 - description: 描述
-- cover_image: 封面图片URL
-- category_id: 分类ID
+- cover_image: 封面图片 URL
+- category_id: 分类 ID
 - status: 状态（draft/published）
 - visibility: 可见性（public/private）
 - view_count: 阅读量
 - created_at: 创建时间
 - updated_at: 更新时间
+
 ```
 
 ### 5.3 分类表 (categories)
 
 ```
-- id: 分类ID
-- user_id: 用户ID
+
+- id: 分类 ID
+- user_id: 用户 ID
 - name: 分类名称
 - description: 分类描述
 - created_at: 创建时间
 - updated_at: 更新时间
+
 ```
 
 ### 5.4 评论表 (comments)
 
 ```
-- id: 评论ID
-- article_id: 文章ID
-- user_id: 评论用户ID
-- parent_id: 父评论ID（用于回复功能，顶级评论为NULL）
+
+- id: 评论 ID
+- article_id: 文章 ID
+- user_id: 评论用户 ID
+- parent_id: 父评论 ID（用于回复功能，顶级评论为 NULL）
 - content: 评论内容
 - like_count: 点赞数
 - status: 状态（published/hidden/deleted）
 - created_at: 创建时间
 - updated_at: 更新时间
+
 ```
 
 ### 5.5 评论点赞表 (comment_likes)
 
 ```
-- id: 点赞ID
-- comment_id: 评论ID
-- user_id: 点赞用户ID
+
+- id: 点赞 ID
+- comment_id: 评论 ID
+- user_id: 点赞用户 ID
 - created_at: 创建时间
+
 ```
 
 ### 5.6 文章点赞表 (article_likes)
 
 ```
-- id: 点赞ID
-- article_id: 文章ID
-- user_id: 点赞用户ID
+
+- id: 点赞 ID
+- article_id: 文章 ID
+- user_id: 点赞用户 ID
 - created_at: 创建时间
+
 ```
 
 ### 5.7 收藏夹表 (favorite_folders)
 
 ```
-- id: 收藏夹ID
-- user_id: 用户ID
+
+- id: 收藏夹 ID
+- user_id: 用户 ID
 - name: 收藏夹名称
 - description: 收藏夹描述
 - is_default: 是否默认收藏夹
 - created_at: 创建时间
 - updated_at: 更新时间
+
 ```
 
 ### 5.8 文章收藏表 (article_favorites)
 
 ```
-- id: 收藏ID
-- article_id: 文章ID
-- user_id: 用户ID
-- folder_id: 收藏夹ID
+
+- id: 收藏 ID
+- article_id: 文章 ID
+- user_id: 用户 ID
+- folder_id: 收藏夹 ID
 - created_at: 收藏旷间
+
 ```
 
 ## 6. 业务规则
@@ -390,3 +381,4 @@
 - 性能优化
 - 安全加固
 - API 文档完善
+```

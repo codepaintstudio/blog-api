@@ -1,202 +1,170 @@
-# Blog API 架构设计文档
+# Blog API 架构设计
 
-## 1. 系统架构概述
-
-### 1.1 架构风格
+## 系统架构
 
 采用经典的三层架构模式：
 
-- **表现层 (Presentation Layer)**：HTTP API 接口
-- **业务逻辑层 (Business Logic Layer)**：核心业务处理
-- **数据访问层 (Data Access Layer)**：数据库操作
+- **控制器层 (Controller)**：HTTP 请求处理和响应
+- **服务层 (Service)**：业务逻辑处理
+- **数据层 (Repository)**：数据库操作
 
-### 1.2 技术栈选型
+## 技术选型
 
-- **编程语言**：Go (Golang)
-- **Web 框架**：Gin
-- **数据库**：MySQL 8.0+
-- **ORM 框架**：GORM
-- **认证**：JWT
-- **文件存储**：本地存储/七牛云 OSS
-- **缓存**：Redis
-- **日志**：Logrus
-- **文档**：Swagger
+### 核心技术
 
-## 2. 项目目录结构
+- **语言**: Go 1.19+
+- **Web 框架**: Gin
+- **ORM**: GORM
+- **数据库**: MySQL 8.0
+- **缓存**: Redis 6.0
+- **认证**: JWT
+- **文档**: Swagger
+
+### 关键组件
+
+- **配置管理**: YAML 格式
+- **日志系统**: 结构化日志
+- **依赖注入**: 自定义容器
+- **中间件**: 认证、限流、CORS、日志
+
+## 项目结构
 
 ```
 blog-api/
-├── cmd/                    # 应用程序入口
-│   └── server/
-│       └── main.go        # 主程序入口
-├── internal/              # 内部代码，不对外暴露
+├── cmd/
+│   └── server/main.go       # 程序入口
+├── internal/              # 内部代码
 │   ├── controllers/       # 控制器层
-│   │   ├── auth.go       # 认证相关
-│   │   ├── user.go       # 用户管理
-│   │   ├── article.go    # 文章管理
-│   │   ├── category.go   # 分类管理
-│   │   ├── comment.go    # 评论管理
-│   │   ├── favorite.go   # 收藏管理
-│   │   └── admin.go      # 管理员功能
-│   ├── services/         # 业务逻辑层
-│   │   ├── auth.go
-│   │   ├── user.go
-│   │   ├── article.go
-│   │   ├── category.go
-│   │   ├── comment.go
-│   │   ├── favorite.go
-│   │   └── admin.go
-│   ├── repositories/     # 数据访问层
-│   │   ├── user.go
-│   │   ├── article.go
-│   │   ├── category.go
-│   │   ├── comment.go
-│   │   └── favorite.go
-│   ├── models/          # 数据模型
-│   │   ├── user.go
-│   │   ├── article.go
-│   │   ├── category.go
-│   │   ├── comment.go
-│   │   └── favorite.go
-│   ├── middleware/      # 中间件
-│   │   ├── auth.go      # 认证中间件
-│   │   ├── cors.go      # 跨域处理
-│   │   ├── rate_limit.go # 限流中间件
-│   │   ├── logging.go   # 日志中间件
-│   │   └── recovery.go  # 错误恢复
-│   ├── utils/           # 工具函数
-│   │   ├── jwt.go       # JWT工具
-│   │   ├── password.go  # 密码处理
-│   │   ├── upload.go    # 文件上传
-│   │   └── validator.go # 数据验证
-│   └── config/          # 配置管理
-│       └── config.go
-├── pkg/                 # 公共代码库
-│   ├── response/        # 统一响应格式
-│   │   └── response.go
-│   ├── errors/          # 错误定义
-│   │   └── errors.go
-│   └── database/        # 数据库连接
-│       └── database.go
-├── api/                 # API文档
-│   └── swagger/
-├── configs/             # 配置文件
-│   ├── config.yaml
-│   └── config.prod.yaml
-├── scripts/             # 脚本文件
-│   └── init.sql        # 数据库初始化脚本
-├── docs/               # 文档
-│   └── design/         # 设计文档
-├── uploads/           # 本地文件存储目录
-├── go.mod            # Go模块定义
-└── README.md         # 项目说明
+│   ├── services/          # 业务逻辑层
+│   ├── repositories/      # 数据访问层
+│   ├── models/           # 数据模型
+│   ├── middlewares/      # 中间件
+│   ├── routes/           # 路由配置
+│   ├── utils/            # 工具函数
+│   └── container/        # 依赖注入
+├── pkg/                  # 公共代码
+│   ├── config/           # 配置管理
+│   ├── database/         # 数据库连接
+│   ├── logger/           # 日志系统
+│   └── response/         # 响应格式
+├── configs/              # 配置文件
+├── docs/                 # 文档和Swagger
+├── uploads/              # 文件存储
+└── logs/                 # 日志文件
 ```
 
-## 3. 数据库设计
+## 数据库设计
 
-### 3.1 数据库选择
+### 核心表结构
 
-- **主数据库**：MySQL 8.0
+**users 用户表**
 
-  - 成熟稳定，支持事务
-  - 丰富的生态和工具支持
-  - 适合结构化数据存储
+- 基本信息：id, username, email, password, nickname
+- 扩展信息：avatar, bio, role, status, email_verified
+- 时间戳：created_at, updated_at
+- 索引：email, username
 
-- **缓存数据库**：Redis
-  - 用于会话存储
-  - 接口限流计数
-  - 热点数据缓存
+**articles 文章表**
 
-### 3.2 表结构设计
+- 内容信息：id, title, content, description, cover_image
+- 关联信息：user_id, category_id
+- 状态信息：status(draft/published), visibility(public/private)
+- 统计信息：view_count, like_count, favorite_count
 
-#### 3.2.1 用户表 (users)
+**categories 分类表**
 
-```sql
-CREATE TABLE users (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    nickname VARCHAR(50),
-    avatar VARCHAR(255),
-    bio TEXT,
-    role ENUM('admin', 'user') DEFAULT 'user',
-    status ENUM('active', 'inactive') DEFAULT 'active',
-    email_verified BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_email (email),
-    INDEX idx_username (username),
-    INDEX idx_status (status)
-);
+- 基本信息：id, user_id, name, description
+- 约束：用户内分类名唯一
+
+**comments 评论表**
+
+- 内容信息：id, content, like_count
+- 关联信息：article_id, user_id, parent_id(支持多级回复)
+- 状态信息：status(published/hidden/deleted)
+
+### 互动功能表
+
+- **article_likes**: 文章点赞记录
+- **comment_likes**: 评论点赞记录
+- **favorite_folders**: 收藏夹
+- **article_favorites**: 文章收藏记录
+- **files**: 文件管理
+
+## 接口设计
+
+### API 风格
+
+- RESTful 风格
+- JSON 数据格式
+- 统一响应结构
+- HTTP 状态码规范
+
+### 认证机制
+
+- JWT Bearer Token
+- Token 过期时间：1 小时
+- Refresh Token：7 天
+- 头部格式：`Authorization: Bearer <token>`
+
+### 响应格式
+
+```json
+{
+  "code": 200,
+  "message": "成功",
+  "data": {},
+  "timestamp": "2024-01-01T00:00:00Z"
+}
 ```
 
-#### 3.2.2 文章表 (articles)
+## 安全设计
 
-```sql
-CREATE TABLE articles (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    content LONGTEXT,
-    description TEXT,
-    cover_image VARCHAR(255),
-    category_id BIGINT,
-    status ENUM('draft', 'published') DEFAULT 'draft',
-    visibility ENUM('public', 'private') DEFAULT 'public',
-    view_count INT DEFAULT 0,
-    like_count INT DEFAULT 0,
-    favorite_count INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
-    INDEX idx_user_id (user_id),
-    INDEX idx_category_id (category_id),
-    INDEX idx_status (status),
-    INDEX idx_visibility (visibility),
-    INDEX idx_created_at (created_at)
-);
-```
+### 认证与授权
 
-#### 3.2.3 分类表 (categories)
+- JWT Token 认证
+- 基于角色的权限控制
+- 管理员权限中间件
+- 资源所有权校验
 
-```sql
-CREATE TABLE categories (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id BIGINT NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY uk_user_category (user_id, name),
-    INDEX idx_user_id (user_id)
-);
-```
+### 防护机制
 
-#### 3.2.4 评论表 (comments)
+- 接口限流（令牌桶算法）
+- 参数验证和数据校验
+- SQL 注入防护（GORM 预处理）
+- XSS 防护（参数转义）
+- CORS 跨域配置
 
-```sql
-CREATE TABLE comments (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    article_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
-    parent_id BIGINT NULL,
-    content TEXT NOT NULL,
-    like_count INT DEFAULT 0,
-    status ENUM('published', 'hidden', 'deleted') DEFAULT 'published',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (parent_id) REFERENCES comments(id) ON DELETE CASCADE,
-    INDEX idx_article_id (article_id),
-    INDEX idx_user_id (user_id),
-    INDEX idx_parent_id (parent_id),
-    INDEX idx_created_at (created_at)
-);
-```
+### 数据安全
+
+- 密码 bcrypt 加密
+- 敏感信息过滤
+- 文件上传类型限制
+- 文件大小限制（10MB）
+
+## 性能优化
+
+### 缓存策略
+
+- Redis 缓存热点数据
+- 数据库连接池
+- 限流计数器缓存
+
+### 数据库优化
+
+- 合理的索引设计
+- 分页查询优化
+- 预编译语句（GORM）
+- 数据库连接复用
+
+### 并发处理
+
+- Gin 框架原生 Goroutine 支持
+- 数据库连接池配置
+- Redis 连接池管理
+
+---
+
+**项目已完成所有核心架构设计并投入使用。**
 
 #### 3.2.5 评论点赞表 (comment_likes)
 
@@ -268,6 +236,7 @@ CREATE TABLE article_favorites (
 ```
 
 #### 3.2.9 文件管理表 (files)
+
 ```sql
 CREATE TABLE files (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -392,6 +361,7 @@ GET    /api/v1/user/stats               # 获取个人统计数据
 ```
 
 #### 4.3.9 文件管理
+
 ```
 POST   /api/v1/files/upload             # 上传文件（支持去重）
 GET    /api/v1/files/:id                # 获取文件信息
