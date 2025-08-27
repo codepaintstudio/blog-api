@@ -64,6 +64,8 @@ func setupAPIRoutes(r *gin.Engine) {
 	// 初始化控制器
 	authController := controllers.NewAuthController()
 	userController := controllers.NewUserController()
+	articleController := controllers.NewArticleController()
+	categoryController := controllers.NewCategoryController()
 	
 	// API版本分组
 	v1 := r.Group("/api/v1")
@@ -91,19 +93,37 @@ func setupAPIRoutes(r *gin.Engine) {
 		// 文章路由
 		articleGroup := v1.Group("/articles")
 		{
-			// 这里后续添加文章相关路由
-			articleGroup.GET("/test", func(c *gin.Context) {
-				response.Success(c, gin.H{"message": "article test"})
-			})
+			// 公开路由（无需登录）
+			articleGroup.GET("", articleController.List)           // 获取文章列表
+			articleGroup.GET("/search", articleController.Search)   // 搜索文章
+			articleGroup.GET("/:id", articleController.GetByID)     // 获取文章详情
+			
+			// 需要登录的路由
+			authRequired := articleGroup.Group("")
+			authRequired.Use(middlewares.AuthMiddleware())
+			{
+				authRequired.POST("", articleController.Create)        // 创建文章
+				authRequired.PUT("/:id", articleController.Update)     // 更新文章
+				authRequired.DELETE("/:id", articleController.Delete)  // 删除文章
+			}
 		}
 		
 		// 分类路由
 		categoryGroup := v1.Group("/categories")
 		{
-			// 这里后续添加分类相关路由
-			categoryGroup.GET("/test", func(c *gin.Context) {
-				response.Success(c, gin.H{"message": "category test"})
-			})
+			// 公开路由（无需登录）
+			categoryGroup.GET("", categoryController.List)         // 获取所有分类列表
+			categoryGroup.GET("/active", categoryController.ListActive)  // 获取活跃分类列表
+			categoryGroup.GET("/:id", categoryController.GetByID)   // 获取分类详情
+			
+			// 需要登录的路由
+			authRequired := categoryGroup.Group("")
+			authRequired.Use(middlewares.AuthMiddleware())
+			{
+				authRequired.POST("", categoryController.Create)       // 创建分类
+				authRequired.PUT("/:id", categoryController.Update)    // 更新分类
+				authRequired.DELETE("/:id", categoryController.Delete) // 删除分类
+			}
 		}
 	}
 }
