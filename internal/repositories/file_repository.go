@@ -15,7 +15,6 @@ type FileRepository interface {
 	Update(file *models.File) error
 	Delete(id uint) error
 	UpdateRefCount(id uint, count int) error
-	GetUnreferencedFiles() ([]*models.File, error)
 	GetByPath(path string) (*models.File, error)
 }
 
@@ -92,12 +91,6 @@ func (r *fileRepository) UpdateRefCount(id uint, count int) error {
 	return r.db.Model(&models.File{}).Where("id = ?", id).Update("ref_count", count).Error
 }
 
-// GetUnreferencedFiles 获取无引用的文件（用于清理）
-func (r *fileRepository) GetUnreferencedFiles() ([]*models.File, error) {
-	var files []*models.File
-	err := r.db.Where("ref_count <= 0").Find(&files).Error
-	return files, err
-}
 
 // GetByPath 根据路径获取文件
 func (r *fileRepository) GetByPath(path string) (*models.File, error) {

@@ -17,7 +17,6 @@ type FileService interface {
 	GetUserFiles(userID uint, page, size int) ([]*models.File, int64, error)
 	IncrementRefCount(id uint) error
 	DecrementRefCount(id uint) error
-	CleanupUnreferencedFiles() error
 }
 
 // fileService 文件服务实现
@@ -212,30 +211,3 @@ func (s *fileService) DecrementRefCount(id uint) error {
 	return nil
 }
 
-// CleanupUnreferencedFiles 清理无引用的文件
-func (s *fileService) CleanupUnreferencedFiles() error {
-	// 获取所有无引用的文件
-	files, err := s.fileRepo.GetUnreferencedFiles()
-	if err != nil {
-		return fmt.Errorf("查询无引用文件失败: %w", err)
-	}
-
-	var deletedCount int
-	for _, file := range files {
-		// 删除数据库记录
-		if err := s.fileRepo.Delete(file.ID); err != nil {
-			fmt.Printf("Warning: 删除文件记录失败: ID=%d, error: %v\n", file.ID, err)
-			continue
-		}
-
-		// 删除物理文件
-		if err := s.fileUtils.DeleteFile(file.Path); err != nil {
-			fmt.Printf("Warning: 删除物理文件失败: %s, error: %v\n", file.Path, err)
-		}
-
-		deletedCount++
-	}
-
-	fmt.Printf("清理完成，删除了 %d 个无引用文件\n", deletedCount)
-	return nil
-}

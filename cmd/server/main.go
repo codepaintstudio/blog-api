@@ -30,11 +30,11 @@ import (
 	"syscall"
 	"time"
 
+	"blog-api/internal/container"
+	"blog-api/internal/routes"
 	"blog-api/pkg/config"
 	"blog-api/pkg/database"
 	"blog-api/pkg/logger"
-	"blog-api/internal/routes"
-	"blog-api/internal/container"
 
 	"github.com/gin-gonic/gin"
 )
@@ -89,10 +89,7 @@ func main() {
 	// 设置优雅关闭
 	go setupGracefulShutdown(srv, appContainer)
 
-	// 启动定时任务
-	appContainer.StartCronJobs()
-
-	logger.Info("博客API服务器已启动", 
+	logger.Info("博客API服务器已启动",
 		logger.String("address", fmt.Sprintf("http://localhost:%d", cfg.Server.Port)),
 		logger.String("mode", cfg.Server.Mode),
 		logger.String("swagger", fmt.Sprintf("http://localhost:%d/swagger/index.html", cfg.Server.Port)),
@@ -120,9 +117,6 @@ func setupGracefulShutdown(srv *http.Server, appContainer *container.Container) 
 		if err := srv.Shutdown(ctx); err != nil {
 			logger.Error("关闭HTTP服务器时出错", logger.Err("error", err))
 		}
-
-		// 停止定时任务
-		appContainer.StopCronJobs()
 
 		// 关闭数据库连接
 		if err := database.CloseMySQL(); err != nil {

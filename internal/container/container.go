@@ -5,7 +5,6 @@ import (
 	"blog-api/internal/repositories"
 	"blog-api/internal/services"
 	"blog-api/internal/utils"
-	"blog-api/internal/cron"
 	"blog-api/pkg/config"
 )
 
@@ -35,7 +34,6 @@ type Container struct {
 	
 	// Utils
 	fileUtils   *utils.FileUtils
-	cronManager *cron.Manager
 	
 	// Controllers
 	authController     *controllers.AuthController
@@ -89,8 +87,6 @@ func (c *Container) InitServices() {
 	c.favoriteService = services.NewFavoriteService()
 	c.adminService = services.NewAdminService()
 	
-	// 初始化定时任务管理器
-	c.cronManager = cron.NewManager(c.fileService)
 }
 
 // InitControllers 初始化Controller层
@@ -106,19 +102,6 @@ func (c *Container) InitControllers() {
 	c.adminController = controllers.NewAdminController(c.adminService)
 }
 
-// StartCronJobs 启动定时任务
-func (c *Container) StartCronJobs() {
-	if c.cronManager != nil {
-		c.cronManager.Start()
-	}
-}
-
-// StopCronJobs 停止定时任务
-func (c *Container) StopCronJobs() {
-	if c.cronManager != nil {
-		c.cronManager.Stop()
-	}
-}
 
 // GetControllers 获取所有Controller
 func (c *Container) GetControllers() (
@@ -135,7 +118,3 @@ func (c *Container) GetControllers() (
 	return c.authController, c.userController, c.articleController, c.categoryController, c.fileController, c.commentController, c.likeController, c.favoriteController, c.adminController
 }
 
-// GetCronManager 获取定时任务管理器
-func (c *Container) GetCronManager() *cron.Manager {
-	return c.cronManager
-}

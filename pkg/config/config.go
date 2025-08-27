@@ -10,14 +10,15 @@ import (
 )
 
 type Config struct {
-	Server    ServerConfig    `yaml:"server"`
-	Database  DatabaseConfig  `yaml:"database"`
-	Redis     RedisConfig     `yaml:"redis"`
-	JWT       JWTConfig       `yaml:"jwt"`
-	Upload    UploadConfig    `yaml:"upload"`
-	Log       LogConfig       `yaml:"log"`
-	RateLimit RateLimitConfig `yaml:"rate_limit"`
-	CORS      CORSConfig      `yaml:"cors"`
+	Server     ServerConfig     `yaml:"server"`
+	Database   DatabaseConfig   `yaml:"database"`
+	Redis      RedisConfig      `yaml:"redis"`
+	JWT        JWTConfig        `yaml:"jwt"`
+	Upload     UploadConfig     `yaml:"upload"`
+	Log        LogConfig        `yaml:"log"`
+	RateLimit  RateLimitConfig  `yaml:"rate_limit"`
+	CORS       CORSConfig       `yaml:"cors"`
+	Cache      CacheConfig      `yaml:"cache"`
 }
 
 type ServerConfig struct {
@@ -91,6 +92,13 @@ type CORSConfig struct {
 	ExposeHeaders    []string `yaml:"expose_headers"`
 	AllowCredentials bool     `yaml:"allow_credentials"`
 	MaxAge           int      `yaml:"max_age"`
+}
+
+type CacheConfig struct {
+	Enabled          bool          `yaml:"enabled"`
+	DefaultTTL       time.Duration `yaml:"default_ttl"`
+	RedisKeyPrefix   string        `yaml:"redis_key_prefix"`
+	CleanupInterval  time.Duration `yaml:"cleanup_interval"`
 }
 
 var GlobalConfig *Config

@@ -10,8 +10,8 @@ import (
 	
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/swaggo/files"
-	"github.com/swaggo/gin-swagger"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	
 	_ "blog-api/docs" // 导入生成的swagger文档
 )
@@ -47,6 +47,9 @@ func SetupRoutes(
 
 // setupMiddlewares 设置中间件
 func setupMiddlewares(r *gin.Engine, cfg *config.Config) {
+	// 安全头中间件 (最先执行)
+	r.Use(middlewares.SecurityHeaders())
+	
 	// 自定义Recovery中间件
 	r.Use(middlewares.RecoveryMiddleware())
 	
@@ -56,6 +59,11 @@ func setupMiddlewares(r *gin.Engine, cfg *config.Config) {
 	// 限流中间件
 	middlewares.InitRateLimiter(&cfg.RateLimit)
 	r.Use(middlewares.RateLimitMiddleware())
+	
+	// 缓存中间件
+	cacheMiddleware := middlewares.NewCacheMiddleware()
+	r.Use(cacheMiddleware.CacheHandler())
+	r.Use(cacheMiddleware.InvalidateCache())
 	
 	// CORS中间件
 	corsConfig := cors.Config{

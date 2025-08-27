@@ -7,6 +7,7 @@ import (
 
 	"blog-api/internal/models"
 	"blog-api/internal/repositories"
+	"blog-api/pkg/cache"
 	"blog-api/pkg/logger"
 	
 	"gorm.io/gorm"
@@ -101,11 +102,15 @@ type ListArticleResponse struct {
 type articleService struct {
 	articleRepo  repositories.ArticleRepository
 	categoryRepo repositories.CategoryRepository
+	cacheService cache.CacheService
+	cacheKey     *cache.CacheKey
 }
 
 // NewArticleService 创建新的文章服务
 func NewArticleService() ArticleService {
 	return &articleService{
+		cacheService: cache.NewCacheService(),
+		cacheKey:     cache.NewCacheKey(),
 		articleRepo:  repositories.NewArticleRepository(),
 		categoryRepo: repositories.NewCategoryRepository(),
 	}
@@ -170,12 +175,23 @@ func (s *articleService) Create(userID uint, req *CreateArticleRequest) (*models
 
 // GetByID 根据ID获取文章
 func (s *articleService) GetByID(id uint, userID *uint) (*ArticleDetailResponse, error) {
-	article, err := s.articleRepo.GetByIDWithAuthor(id)
+	// 尝试从缓存获取文章
+	cacheKey := s.cacheKey.Article(id)
+	var article *models.Article
+	
+	err := s.cacheService.Get(cacheKey, &article)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.New("文章不存在")
+		// 缓存未命中，从数据库获取
+		article, err = s.articleRepo.GetByIDWithAuthor(id)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil, errors.New("文章不存在")
+			}
+			return nil, err
 		}
-		return nil, err
+		
+		// 将文章缓存5分钟
+		s.cacheService.Set(cacheKey, article, 5*time.Minute)
 	}
 	
 	// 检查访问权限
@@ -190,6 +206,11 @@ func (s *articleService) GetByID(id uint, userID *uint) (*ArticleDetailResponse,
 	// 如果不是作者访问，增加浏览量
 	if userID == nil || *userID != article.UserID {
 		s.articleRepo.IncrementViewCount(id)
+		// 异步更新缓存中的浏览量
+		go func() {
+			article.ViewCount++
+			s.cacheService.Set(cacheKey, article, 5*time.Minute)
+		}()
 	}
 	
 	return s.toArticleDetailResponse(article), nil
@@ -260,6 +281,11 @@ func (s *articleService) Update(id, userID uint, req *UpdateArticleRequest) (*mo
 		return nil, err
 	}
 	
+	// 清除相关缓存
+	s.cacheService.Delete(s.cacheKey.Article(id))
+	s.cacheService.DeletePattern("articles:list:*")
+	s.cacheService.DeletePattern("articles:popular")
+	
 	logger.Info("文章更新成功",
 		logger.Int("user_id", int(userID)),
 		logger.Int("article_id", int(article.ID)),
@@ -289,6 +315,11 @@ func (s *articleService) Delete(id, userID uint) error {
 		logger.Error("删除文章失败", logger.Err("error", err))
 		return err
 	}
+	
+	// 清除相关缓存
+	s.cacheService.Delete(s.cacheKey.Article(id))
+	s.cacheService.DeletePattern("articles:list:*")
+	s.cacheService.DeletePattern("articles:popular")
 	
 	logger.Info("文章删除成功",
 		logger.Int("user_id", int(userID)),
