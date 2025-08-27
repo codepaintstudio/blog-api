@@ -5,6 +5,8 @@ import (
 	
 	"blog-api/pkg/config"
 	"blog-api/pkg/response"
+	"blog-api/internal/middlewares"
+	"blog-api/internal/controllers"
 	
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -35,11 +37,15 @@ func SetupRoutes() *gin.Engine {
 
 // setupMiddlewares 设置中间件
 func setupMiddlewares(r *gin.Engine, cfg *config.Config) {
-	// Recovery中间件
-	r.Use(gin.Recovery())
+	// 自定义Recovery中间件
+	r.Use(middlewares.RecoveryMiddleware())
 	
-	// 日志中间件
-	r.Use(gin.Logger())
+	// 自定义日志中间件
+	r.Use(middlewares.LoggerMiddleware())
+	
+	// 限流中间件
+	middlewares.InitRateLimiter(&cfg.RateLimit)
+	r.Use(middlewares.RateLimitMiddleware())
 	
 	// CORS中间件
 	corsConfig := cors.Config{
@@ -55,28 +61,31 @@ func setupMiddlewares(r *gin.Engine, cfg *config.Config) {
 
 // setupAPIRoutes 设置API路由
 func setupAPIRoutes(r *gin.Engine) {
+	// 初始化控制器
+	authController := controllers.NewAuthController()
+	userController := controllers.NewUserController()
+	
 	// API版本分组
 	v1 := r.Group("/api/v1")
 	{
 		// 健康检查
 		v1.GET("/health", healthCheck)
 		
-		// 认证路由
+		// 认证路由（无需登录）
 		authGroup := v1.Group("/auth")
 		{
-			// 这里后续添加认证相关路由
-			authGroup.GET("/test", func(c *gin.Context) {
-				response.Success(c, gin.H{"message": "auth test"})
-			})
+			authGroup.POST("/register", authController.Register)
+			authGroup.POST("/login", authController.Login)
+			authGroup.POST("/refresh", authController.RefreshToken)
 		}
 		
-		// 用户路由
+		// 用户路由（需要登录）
 		userGroup := v1.Group("/users")
+		userGroup.Use(middlewares.AuthMiddleware())
 		{
-			// 这里后续添加用户相关路由
-			userGroup.GET("/test", func(c *gin.Context) {
-				response.Success(c, gin.H{"message": "user test"})
-			})
+			userGroup.GET("/profile", userController.GetProfile)
+			userGroup.PUT("/profile", userController.UpdateProfile)
+			userGroup.PUT("/password", userController.ChangePassword)
 		}
 		
 		// 文章路由
