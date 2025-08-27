@@ -34,6 +34,7 @@ import (
 	"blog-api/pkg/database"
 	"blog-api/pkg/logger"
 	"blog-api/internal/routes"
+	"blog-api/internal/container"
 
 	"github.com/gin-gonic/gin"
 )
@@ -65,8 +66,17 @@ func main() {
 		logger.Fatal("Redis 初始化失败", logger.Err("error", err))
 	}
 
+	// 初始化依赖注入容器
+	appContainer := container.NewContainer()
+	appContainer.InitRepositories()
+	appContainer.InitServices()
+	appContainer.InitControllers()
+
+	// 获取所有控制器
+	authController, userController, articleController, categoryController, fileController, commentController, likeController, favoriteController, adminController := appContainer.GetControllers()
+
 	// 初始化路由
-	router := routes.SetupRoutes()
+	router := routes.SetupRoutes(authController, userController, articleController, categoryController, fileController, commentController, likeController, favoriteController, adminController)
 
 	// 创建 HTTP 服务器
 	srv := &http.Server{
@@ -77,7 +87,10 @@ func main() {
 	}
 
 	// 设置优雅关闭
-	go setupGracefulShutdown(srv)
+	go setupGracefulShutdown(srv, appContainer)
+
+	// 启动定时任务
+	appContainer.StartCronJobs()
 
 	logger.Info("博客API服务器已启动", 
 		logger.String("address", fmt.Sprintf("http://localhost:%d", cfg.Server.Port)),
@@ -91,7 +104,7 @@ func main() {
 	}
 }
 
-func setupGracefulShutdown(srv *http.Server) {
+func setupGracefulShutdown(srv *http.Server, appContainer *container.Container) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
@@ -107,6 +120,9 @@ func setupGracefulShutdown(srv *http.Server) {
 		if err := srv.Shutdown(ctx); err != nil {
 			logger.Error("关闭HTTP服务器时出错", logger.Err("error", err))
 		}
+
+		// 停止定时任务
+		appContainer.StopCronJobs()
 
 		// 关闭数据库连接
 		if err := database.CloseMySQL(); err != nil {

@@ -32,22 +32,26 @@ const (
 	FORBIDDEN    = 403
 
 	// 参数相关
+	BAD_REQUEST = 400
 	INVALID_PARAMS = 400
 
 	// 数据相关
 	NOT_FOUND      = 404
 	ALREADY_EXISTS = 409
+	
+	// 服务器相关
+	INTERNAL_SERVER_ERROR = 500
 )
 
 // 响应消息映射
 var codeMessages = map[int]string{
-	SUCCESS:        "操作成功",
-	ERROR:          "操作失败",
-	UNAUTHORIZED:   "未授权",
-	FORBIDDEN:      "禁止访问",
-	INVALID_PARAMS: "参数错误",
-	NOT_FOUND:      "数据不存在",
-	ALREADY_EXISTS: "数据已存在",
+	SUCCESS:               "操作成功",
+	ERROR:                 "操作失败", 
+	UNAUTHORIZED:          "未授权",
+	FORBIDDEN:             "禁止访问",
+	BAD_REQUEST:           "请求错误",
+	NOT_FOUND:             "数据不存在",
+	ALREADY_EXISTS:        "数据已存在",
 }
 
 // getCodeMessage 获取状态码对应的消息

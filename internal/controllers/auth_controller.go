@@ -16,9 +16,9 @@ type AuthController struct {
 }
 
 // NewAuthController 创建新的认证控制器
-func NewAuthController() *AuthController {
+func NewAuthController(userService services.UserService) *AuthController {
 	return &AuthController{
-		userService: services.NewUserService(),
+		userService: userService,
 		validator:   validator.New(),
 	}
 }

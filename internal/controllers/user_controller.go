@@ -17,9 +17,9 @@ type UserController struct {
 }
 
 // NewUserController 创建新的用户控制器
-func NewUserController() *UserController {
+func NewUserController(userService services.UserService) *UserController {
 	return &UserController{
-		userService: services.NewUserService(),
+		userService: userService,
 		validator:   validator.New(),
 	}
 }

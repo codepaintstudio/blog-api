@@ -17,9 +17,9 @@ type CategoryController struct {
 }
 
 // NewCategoryController 创建新的分类控制器
-func NewCategoryController() *CategoryController {
+func NewCategoryController(categoryService services.CategoryService) *CategoryController {
 	return &CategoryController{
-		categoryService: services.NewCategoryService(),
+		categoryService: categoryService,
 	}
 }
 

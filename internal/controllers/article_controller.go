@@ -19,9 +19,9 @@ type ArticleController struct {
 }
 
 // NewArticleController 创建新的文章控制器
-func NewArticleController() *ArticleController {
+func NewArticleController(articleService services.ArticleService) *ArticleController {
 	return &ArticleController{
-		articleService: services.NewArticleService(),
+		articleService: articleService,
 		validator:      validator.New(),
 	}
 }

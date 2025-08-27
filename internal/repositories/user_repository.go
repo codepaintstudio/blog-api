@@ -7,6 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// UserFilters 用户筛选条件
+type UserFilters struct {
+	Role         string `form:"role"`
+	Status       string `form:"status"`
+	EmailVerified *bool `form:"email_verified"`
+	Keyword      string `form:"keyword"` // 用户名或邮箱关键词搜索
+}
+
 // UserRepository 用户仓库接口
 type UserRepository interface {
 	Create(user *models.User) error
@@ -16,6 +24,7 @@ type UserRepository interface {
 	Update(user *models.User) error
 	Delete(id uint) error
 	List(offset, limit int) ([]*models.User, int64, error)
+	GetUsersWithFilters(page, size int, filters *UserFilters) ([]*models.User, int64, error)
 	ExistsByEmail(email string) (bool, error)
 	ExistsByUsername(username string) (bool, error)
 	UpdateLoginTime(id uint) error
@@ -114,4 +123,44 @@ func (r *userRepository) ExistsByUsername(username string) (bool, error) {
 // UpdateLoginTime 更新用户登录时间
 func (r *userRepository) UpdateLoginTime(id uint) error {
 	return r.db.Model(&models.User{}).Where("id = ?", id).Update("login_at", gorm.Expr("NOW()")).Error
+}
+
+// GetUsersWithFilters 根据筛选条件获取用户列表
+func (r *userRepository) GetUsersWithFilters(page, size int, filters *UserFilters) ([]*models.User, int64, error) {
+	var users []*models.User
+	var total int64
+	
+	// 构建查询
+	query := r.db.Model(&models.User{})
+	
+	// 应用筛选条件
+	if filters != nil {
+		if filters.Role != "" {
+			query = query.Where("role = ?", filters.Role)
+		}
+		if filters.Status != "" {
+			query = query.Where("status = ?", filters.Status)
+		}
+		if filters.EmailVerified != nil {
+			query = query.Where("email_verified = ?", *filters.EmailVerified)
+		}
+		if filters.Keyword != "" {
+			query = query.Where("username LIKE ? OR email LIKE ?", 
+				"%"+filters.Keyword+"%", "%"+filters.Keyword+"%")
+		}
+	}
+	
+	// 获取总数
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	
+	// 获取分页数据
+	offset := (page - 1) * size
+	err := query.Order("created_at DESC").Offset(offset).Limit(size).Find(&users).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	
+	return users, total, nil
 }

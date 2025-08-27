@@ -223,6 +223,10 @@ func Int(key string, value int) Field {
 	return Field{Key: key, Value: value}
 }
 
+func Uint(key string, value uint) Field {
+	return Field{Key: key, Value: value}
+}
+
 func Err(key string, err error) Field {
 	return Field{Key: key, Value: err}
 }
