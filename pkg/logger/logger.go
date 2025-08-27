@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -173,35 +174,43 @@ func (l *simpleLogger) Fatal(msg string, fields ...Field) {
 }
 
 func (l *simpleLogger) log(level Level, msg string, fields ...Field) {
-	timestamp := time.Now().Format(\"2006-01-02 15:04:05\")
+	timestamp := time.Now().Format("2006-01-02 15:04:05")
 	levelName := levelNames[level]
 	
-	logMsg := timestamp + \" [\" + levelName + \"] \" + msg
+	logMsg := timestamp + " [" + levelName + "] " + msg
 	
 	// 添加字段信息
 	if len(fields) > 0 {
-		logMsg += \" {\"
+		logMsg += " {"
 		for i, field := range fields {
 			if i > 0 {
-				logMsg += \", \"
+				logMsg += ", "
 			}
-			logMsg += field.Key + \": \" + formatValue(field.Value)
+			logMsg += field.Key + ": " + formatValue(field.Value)
 		}
-		logMsg += \"}\"
+		logMsg += "}"
 	}
 	
-	logMsg += \"\\n\"
+	logMsg += "\n"
 	l.writer.Write([]byte(logMsg))
 }
 
 func formatValue(v interface{}) string {
 	switch val := v.(type) {
 	case string:
-		return \"\\\"\" + val + \"\\\"\"
+		return "\"" + val + "\""
+	case int, int8, int16, int32, int64:
+		return fmt.Sprintf("%v", val)
+	case uint, uint8, uint16, uint32, uint64:
+		return fmt.Sprintf("%v", val)
+	case float32, float64:
+		return fmt.Sprintf("%v", val)
+	case bool:
+		return fmt.Sprintf("%v", val)
 	case error:
-		return \"\\\"\" + val.Error() + \"\\\"\"
+		return "\"" + val.Error() + "\""
 	default:
-		return \"\\\"\" + string(interface{}(val).([]byte)) + \"\\\"\"
+		return fmt.Sprintf("\"%v\"", val)
 	}
 }
 
@@ -214,6 +223,6 @@ func Int(key string, value int) Field {
 	return Field{Key: key, Value: value}
 }
 
-func Error(key string, err error) Field {
+func Err(key string, err error) Field {
 	return Field{Key: key, Value: err}
 }

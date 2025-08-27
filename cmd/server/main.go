@@ -1,68 +1,123 @@
+// Package main Blog API
+// @title Blog API
+// @version 1.0
+// @description 一个专为前端开发学习者提供的博客后端API系统
+// @termsOfService https://github.com/codepaintstudio/blog-api
+//
+// @contact.name API Support
+// @contact.url https://github.com/codepaintstudio/blog-api/issues
+// @contact.email support@example.com
+//
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+//
+// @host localhost:6789
+// @BasePath /api/v1
+//
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 package main
 
 import (
-	"log"
+	"context"
+	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
+	"time"
 
 	"blog-api/pkg/config"
 	"blog-api/pkg/database"
+	"blog-api/pkg/logger"
+	"blog-api/internal/routes"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	log.Println("博客服务启动中...")
+	logger.Info("博客服务启动中...")
 
 	// 初始化配置
-	_, err := config.LoadConfig("")
+	cfg, err := config.LoadConfig("")
 	if err != nil {
-		log.Fatalf("加载环境变量失败: %v", err)
+		logger.Fatal("加载配置失败", logger.Err("error", err))
 	}
-	log.Println("配置加载成功")
+	logger.Info("配置加载成功")
+
+	// 初始化日志系统
+	if err := logger.InitLogger(&cfg.Log); err != nil {
+		logger.Fatal("初始化日志系统失败", logger.Err("error", err))
+	}
+
+	// 设置Gin模式
+	gin.SetMode(cfg.Server.Mode)
 
 	// 初始化数据库连接
 	if err := database.InitMySQL(); err != nil {
-		log.Fatalf("MYSQL 初始化失败: %v", err)
+		logger.Fatal("MySQL 初始化失败", logger.Err("error", err))
 	}
 
 	if err := database.InitRedis(); err != nil {
-		log.Fatalf("REDIS 初始化失败: %v", err)
+		logger.Fatal("Redis 初始化失败", logger.Err("error", err))
+	}
+
+	// 初始化路由
+	router := routes.SetupRoutes()
+
+	// 创建 HTTP 服务器
+	srv := &http.Server{
+		Addr:         ":" + strconv.Itoa(cfg.Server.Port),
+		Handler:      router,
+		ReadTimeout:  time.Duration(cfg.Server.ReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(cfg.Server.WriteTimeout) * time.Second,
 	}
 
 	// 设置优雅关闭
-	setupGracefulShutdown()
+	go setupGracefulShutdown(srv)
 
-	// TODO: 初始化路由和中间件
-	// TODO: 启动服务器
+	logger.Info("博客API服务器已启动", 
+		logger.String("address", fmt.Sprintf("http://localhost:%d", cfg.Server.Port)),
+		logger.String("mode", cfg.Server.Mode),
+		logger.String("swagger", fmt.Sprintf("http://localhost:%d/swagger/index.html", cfg.Server.Port)),
+	)
 
-	log.Println("博客API服务器已就绪")
-
-	// 等待关闭信号
-	waitForShutdown()
+	// 启动服务器
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logger.Fatal("服务器启动失败", logger.Err("error", err))
+	}
 }
 
-func setupGracefulShutdown() {
+func setupGracefulShutdown(srv *http.Server) {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
 		<-c
-		log.Println("正在关闭服务器...")
+		logger.Info("正在关闭服务器...")
+
+		// 设置关闭超时
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+
+		// 关闭HTTP服务器
+		if err := srv.Shutdown(ctx); err != nil {
+			logger.Error("关闭HTTP服务器时出错", logger.Err("error", err))
+		}
 
 		// 关闭数据库连接
 		if err := database.CloseMySQL(); err != nil {
-			log.Printf("关闭MySQL时出错: %v", err)
+			logger.Error("关闭MySQL时出错", logger.Err("error", err))
 		}
 
 		if err := database.CloseRedis(); err != nil {
-			log.Printf("关闭Redis时出错: %v", err)
+			logger.Error("关闭Redis时出错", logger.Err("error", err))
 		}
 
-		log.Println("服务器关闭完成")
+		logger.Info("服务器关闭完成")
 		os.Exit(0)
 	}()
-}
-
-func waitForShutdown() {
-	select {}
 }

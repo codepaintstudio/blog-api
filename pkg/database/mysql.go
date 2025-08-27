@@ -102,7 +102,7 @@ func AutoMigrate() error {
 	
 	// 创建默认数据
 	if err := createDefaultData(); err != nil {
-		logger.Warn("创建默认数据失败", logger.Error("error", err))
+		logger.Warn("创建默认数据失败", logger.Err("error", err))
 	}
 	
 	return nil
