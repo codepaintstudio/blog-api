@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -14,33 +15,48 @@ type Config struct {
 	Redis     RedisConfig     `yaml:"redis"`
 	JWT       JWTConfig       `yaml:"jwt"`
 	Upload    UploadConfig    `yaml:"upload"`
+	Log       LogConfig       `yaml:"log"`
 	RateLimit RateLimitConfig `yaml:"rate_limit"`
-	Logging   LoggingConfig   `yaml:"logging"`
+	CORS      CORSConfig      `yaml:"cors"`
 }
 
 type ServerConfig struct {
-	Port string `yaml:"port"`
-	Mode string `yaml:"mode"`
+	Port         int           `yaml:"port"`
+	Mode         string        `yaml:"mode"`
+	ReadTimeout  time.Duration `yaml:"read_timeout"`
+	WriteTimeout time.Duration `yaml:"write_timeout"`
 }
 
 type DatabaseConfig struct {
-	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	DBName   string `yaml:"dbname"`
+	Host              string        `yaml:"host"`
+	Port              int           `yaml:"port"`
+	Username          string        `yaml:"username"`
+	Password          string        `yaml:"password"`
+	DBName            string        `yaml:"dbname"`
+	Charset           string        `yaml:"charset"`
+	MaxIdleConns      int           `yaml:"max_idle_conns"`
+	MaxOpenConns      int           `yaml:"max_open_conns"`
+	ConnMaxLifetime   time.Duration `yaml:"conn_max_lifetime"`
+	ConnMaxIdleTime   time.Duration `yaml:"conn_max_idle_time"`
 }
 
 type RedisConfig struct {
-	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
-	Password string `yaml:"password"`
-	DB       int    `yaml:"db"`
+	Host           string        `yaml:"host"`
+	Port           int           `yaml:"port"`
+	Password       string        `yaml:"password"`
+	DB             int           `yaml:"db"`
+	PoolSize       int           `yaml:"pool_size"`
+	MinIdleConns   int           `yaml:"min_idle_conns"`
+	DialTimeout    time.Duration `yaml:"dial_timeout"`
+	ReadTimeout    time.Duration `yaml:"read_timeout"`
+	WriteTimeout   time.Duration `yaml:"write_timeout"`
 }
 
 type JWTConfig struct {
-	Secret string `yaml:"secret"`
-	Expire int    `yaml:"expire"`
+	Secret        string        `yaml:"secret"`
+	AccessExpire  time.Duration `yaml:"access_expire"`
+	RefreshExpire time.Duration `yaml:"refresh_expire"`
+	Issuer        string        `yaml:"issuer"`
 }
 
 type UploadConfig struct {
@@ -50,18 +66,31 @@ type UploadConfig struct {
 	BaseURL      string   `yaml:"base_url"`
 }
 
-type RateLimitConfig struct {
-	IPLimit   int `yaml:"ip_limit"`
-	UserLimit int `yaml:"user_limit"`
-}
-
-type LoggingConfig struct {
+type LogConfig struct {
 	Level      string `yaml:"level"`
 	Format     string `yaml:"format"`
-	File       string `yaml:"file"`
+	FilePath   string `yaml:"file_path"`
 	MaxSize    int    `yaml:"max_size"`
 	MaxBackups int    `yaml:"max_backups"`
 	MaxAge     int    `yaml:"max_age"`
+	Compress   bool   `yaml:"compress"`
+}
+
+type RateLimitConfig struct {
+	Enabled           bool `yaml:"enabled"`
+	RequestsPerMinute int  `yaml:"requests_per_minute"`
+	Burst             int  `yaml:"burst"`
+	IPLimit           int  `yaml:"ip_limit"`
+	UserLimit         int  `yaml:"user_limit"`
+}
+
+type CORSConfig struct {
+	AllowOrigins     []string `yaml:"allow_origins"`
+	AllowMethods     []string `yaml:"allow_methods"`
+	AllowHeaders     []string `yaml:"allow_headers"`
+	ExposeHeaders    []string `yaml:"expose_headers"`
+	AllowCredentials bool     `yaml:"allow_credentials"`
+	MaxAge           int      `yaml:"max_age"`
 }
 
 var GlobalConfig *Config
