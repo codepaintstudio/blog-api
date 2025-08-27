@@ -11,7 +11,7 @@
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
 //
-// @host localhost:6789
+// @host localhost:8080
 // @BasePath /api/v1
 //
 // @securityDefinitions.apikey BearerAuth
@@ -71,6 +71,12 @@ func main() {
 	appContainer.InitRepositories()
 	appContainer.InitServices()
 	appContainer.InitControllers()
+
+	// 初始化系统管理员
+	adminInitService := appContainer.GetAdminInitService()
+	if err := adminInitService.InitializeAdmin(); err != nil {
+		logger.Error("管理员初始化失败", logger.Err("error", err))
+	}
 
 	// 获取所有控制器
 	authController, userController, articleController, categoryController, fileController, commentController, likeController, favoriteController, adminController := appContainer.GetControllers()

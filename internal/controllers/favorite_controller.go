@@ -4,8 +4,8 @@ import (
 	"strconv"
 
 	"blog-api/internal/services"
-	"blog-api/pkg/response"
 	"blog-api/pkg/errors"
+	"blog-api/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,7 +28,7 @@ func NewFavoriteController(favoriteService services.FavoriteService) *FavoriteCo
 // @Tags 收藏
 // @Accept json
 // @Produce json
-// @Param folder body services.FolderCreateRequest true "收藏夹信息"
+// @Param folder body services.CreateFolderRequest true "收藏夹信息"
 // @Success 200 {object} response.Response{data=models.FavoriteFolder}
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
@@ -71,7 +71,7 @@ func (c *FavoriteController) CreateFolder(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path int true "收藏夹ID"
-// @Param folder body services.FolderUpdateRequest true "收藏夹信息"
+// @Param folder body services.UpdateFolderRequest true "收藏夹信息"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
@@ -168,7 +168,7 @@ func (c *FavoriteController) DeleteFolder(ctx *gin.Context) {
 // @Tags 收藏
 // @Accept json
 // @Produce json
-// @Success 200 {object} response.Response{data=[]services.FolderListResponse}
+// @Success 200 {object} response.Response{data=[]models.FavoriteFolder}
 // @Failure 401 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /favorites/folders [get]
@@ -325,7 +325,7 @@ func (c *FavoriteController) GetFolderArticles(ctx *gin.Context) {
 	// 获取分页参数
 	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
 	size, _ := strconv.Atoi(ctx.DefaultQuery("size", "10"))
-	
+
 	if page < 1 {
 		page = 1
 	}
@@ -372,7 +372,7 @@ func (c *FavoriteController) GetUserFavorites(ctx *gin.Context) {
 	// 获取分页参数
 	page, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
 	size, _ := strconv.Atoi(ctx.DefaultQuery("size", "10"))
-	
+
 	if page < 1 {
 		page = 1
 	}

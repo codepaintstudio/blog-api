@@ -10,15 +10,16 @@ import (
 )
 
 type Config struct {
-	Server     ServerConfig     `yaml:"server"`
-	Database   DatabaseConfig   `yaml:"database"`
-	Redis      RedisConfig      `yaml:"redis"`
-	JWT        JWTConfig        `yaml:"jwt"`
-	Upload     UploadConfig     `yaml:"upload"`
-	Log        LogConfig        `yaml:"log"`
-	RateLimit  RateLimitConfig  `yaml:"rate_limit"`
-	CORS       CORSConfig       `yaml:"cors"`
-	Cache      CacheConfig      `yaml:"cache"`
+	Server    ServerConfig    `yaml:"server"`
+	Database  DatabaseConfig  `yaml:"database"`
+	Redis     RedisConfig     `yaml:"redis"`
+	JWT       JWTConfig       `yaml:"jwt"`
+	Upload    UploadConfig    `yaml:"upload"`
+	Log       LogConfig       `yaml:"log"`
+	RateLimit RateLimitConfig `yaml:"rate_limit"`
+	CORS      CORSConfig      `yaml:"cors"`
+	Cache     CacheConfig     `yaml:"cache"`
+	Admin     AdminConfig     `yaml:"admin"`
 }
 
 type ServerConfig struct {
@@ -29,28 +30,28 @@ type ServerConfig struct {
 }
 
 type DatabaseConfig struct {
-	Host              string        `yaml:"host"`
-	Port              int           `yaml:"port"`
-	Username          string        `yaml:"username"`
-	Password          string        `yaml:"password"`
-	DBName            string        `yaml:"dbname"`
-	Charset           string        `yaml:"charset"`
-	MaxIdleConns      int           `yaml:"max_idle_conns"`
-	MaxOpenConns      int           `yaml:"max_open_conns"`
-	ConnMaxLifetime   time.Duration `yaml:"conn_max_lifetime"`
-	ConnMaxIdleTime   time.Duration `yaml:"conn_max_idle_time"`
+	Host            string        `yaml:"host"`
+	Port            int           `yaml:"port"`
+	Username        string        `yaml:"username"`
+	Password        string        `yaml:"password"`
+	DBName          string        `yaml:"dbname"`
+	Charset         string        `yaml:"charset"`
+	MaxIdleConns    int           `yaml:"max_idle_conns"`
+	MaxOpenConns    int           `yaml:"max_open_conns"`
+	ConnMaxLifetime time.Duration `yaml:"conn_max_lifetime"`
+	ConnMaxIdleTime time.Duration `yaml:"conn_max_idle_time"`
 }
 
 type RedisConfig struct {
-	Host           string        `yaml:"host"`
-	Port           int           `yaml:"port"`
-	Password       string        `yaml:"password"`
-	DB             int           `yaml:"db"`
-	PoolSize       int           `yaml:"pool_size"`
-	MinIdleConns   int           `yaml:"min_idle_conns"`
-	DialTimeout    time.Duration `yaml:"dial_timeout"`
-	ReadTimeout    time.Duration `yaml:"read_timeout"`
-	WriteTimeout   time.Duration `yaml:"write_timeout"`
+	Host         string        `yaml:"host"`
+	Port         int           `yaml:"port"`
+	Password     string        `yaml:"password"`
+	DB           int           `yaml:"db"`
+	PoolSize     int           `yaml:"pool_size"`
+	MinIdleConns int           `yaml:"min_idle_conns"`
+	DialTimeout  time.Duration `yaml:"dial_timeout"`
+	ReadTimeout  time.Duration `yaml:"read_timeout"`
+	WriteTimeout time.Duration `yaml:"write_timeout"`
 }
 
 type JWTConfig struct {
@@ -95,10 +96,17 @@ type CORSConfig struct {
 }
 
 type CacheConfig struct {
-	Enabled          bool          `yaml:"enabled"`
-	DefaultTTL       time.Duration `yaml:"default_ttl"`
-	RedisKeyPrefix   string        `yaml:"redis_key_prefix"`
-	CleanupInterval  time.Duration `yaml:"cleanup_interval"`
+	Enabled         bool          `yaml:"enabled"`
+	DefaultTTL      time.Duration `yaml:"default_ttl"`
+	RedisKeyPrefix  string        `yaml:"redis_key_prefix"`
+	CleanupInterval time.Duration `yaml:"cleanup_interval"`
+}
+
+type AdminConfig struct {
+	Username string `yaml:"username"`
+	Email    string `yaml:"email"`
+	Nickname string `yaml:"nickname"`
+	Password string `yaml:"password"`
 }
 
 var GlobalConfig *Config

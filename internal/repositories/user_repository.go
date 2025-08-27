@@ -28,6 +28,7 @@ type UserRepository interface {
 	ExistsByEmail(email string) (bool, error)
 	ExistsByUsername(username string) (bool, error)
 	UpdateLoginTime(id uint) error
+	HasAdmin() (bool, error)
 }
 
 // userRepository 用户仓库实现
@@ -104,6 +105,13 @@ func (r *userRepository) List(offset, limit int) ([]*models.User, int64, error) 
 	}
 	
 	return users, total, nil
+}
+
+// HasAdmin 检查系统中是否已存在管理员
+func (r *userRepository) HasAdmin() (bool, error) {
+	var count int64
+	err := r.db.Model(&models.User{}).Where("role = ?", "admin").Count(&count).Error
+	return count > 0, err
 }
 
 // ExistsByEmail 检查邮箱是否已存在

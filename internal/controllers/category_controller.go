@@ -26,7 +26,7 @@ func NewCategoryController(categoryService services.CategoryService) *CategoryCo
 // Create 创建分类
 // @Summary 创建分类
 // @Description 创建新的文章分类
-// @Tags categories
+// @Tags 分类
 // @Accept json
 // @Produce json
 // @Security BearerAuth
@@ -39,7 +39,7 @@ func NewCategoryController(categoryService services.CategoryService) *CategoryCo
 func (cc *CategoryController) Create(c *gin.Context) {
 	var req services.CreateCategoryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		logger.Warn("分类创建参数绑定失败", 
+		logger.Warn("分类创建参数绑定失败",
 			logger.Err("error", err),
 			logger.String("ip", c.ClientIP()),
 		)
@@ -53,7 +53,7 @@ func (cc *CategoryController) Create(c *gin.Context) {
 			logger.Err("error", err),
 			logger.String("name", req.Name),
 		)
-		
+
 		switch err.Error() {
 		case "分类名称已存在":
 			response.ErrorWithMessage(c, response.INVALID_PARAMS, err.Error())
@@ -82,7 +82,7 @@ func (cc *CategoryController) Create(c *gin.Context) {
 // GetByID 根据ID获取分类详情
 // @Summary 获取分类详情
 // @Description 根据分类ID获取分类详细信息
-// @Tags categories
+// @Tags 分类
 // @Accept json
 // @Produce json
 // @Param id path int true "分类ID"
@@ -105,7 +105,7 @@ func (cc *CategoryController) GetByID(c *gin.Context) {
 			logger.Err("error", err),
 			logger.Int("category_id", int(id)),
 		)
-		
+
 		switch err.Error() {
 		case "分类不存在":
 			response.ErrorWithMessage(c, response.NOT_FOUND, err.Error())
@@ -134,7 +134,7 @@ func (cc *CategoryController) GetByID(c *gin.Context) {
 // Update 更新分类
 // @Summary 更新分类
 // @Description 更新分类信息
-// @Tags categories
+// @Tags 分类
 // @Accept json
 // @Produce json
 // @Security BearerAuth
@@ -156,7 +156,7 @@ func (cc *CategoryController) Update(c *gin.Context) {
 
 	var req services.UpdateCategoryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		logger.Warn("分类更新参数绑定失败", 
+		logger.Warn("分类更新参数绑定失败",
 			logger.Err("error", err),
 			logger.String("ip", c.ClientIP()),
 		)
@@ -170,7 +170,7 @@ func (cc *CategoryController) Update(c *gin.Context) {
 			logger.Err("error", err),
 			logger.Int("category_id", int(id)),
 		)
-		
+
 		switch err.Error() {
 		case "分类不存在":
 			response.ErrorWithMessage(c, response.NOT_FOUND, err.Error())
@@ -201,7 +201,7 @@ func (cc *CategoryController) Update(c *gin.Context) {
 // Delete 删除分类
 // @Summary 删除分类
 // @Description 删除指定的分类
-// @Tags categories
+// @Tags 分类
 // @Accept json
 // @Produce json
 // @Security BearerAuth
@@ -226,7 +226,7 @@ func (cc *CategoryController) Delete(c *gin.Context) {
 			logger.Err("error", err),
 			logger.Int("category_id", int(id)),
 		)
-		
+
 		switch err.Error() {
 		case "分类不存在":
 			response.ErrorWithMessage(c, response.NOT_FOUND, err.Error())
@@ -244,7 +244,7 @@ func (cc *CategoryController) Delete(c *gin.Context) {
 // List 获取所有分类列表
 // @Summary 获取分类列表
 // @Description 获取所有分类列表，包含文章数量统计
-// @Tags categories
+// @Tags 分类
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response{data=[]services.CategoryListResponse} "获取成功"
@@ -264,7 +264,7 @@ func (cc *CategoryController) List(c *gin.Context) {
 // ListActive 获取活跃分类列表
 // @Summary 获取活跃分类列表
 // @Description 获取所有活跃状态的分类列表
-// @Tags categories
+// @Tags 分类
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response{data=[]services.CategoryListResponse} "获取成功"

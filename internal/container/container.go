@@ -11,30 +11,31 @@ import (
 // Container 依赖注入容器
 type Container struct {
 	config *config.Config
-	
+
 	// Repositories
-	userRepo             repositories.UserRepository
-	articleRepo          repositories.ArticleRepository
-	categoryRepo         repositories.CategoryRepository
-	fileRepo             repositories.FileRepository
-	commentRepo          repositories.CommentRepository
-	articleLikeRepo      repositories.ArticleLikeRepository
-	commentLikeRepo      repositories.CommentLikeRepository
-	favoriteRepo         repositories.FavoriteRepository
-	
-	// Services  
-	userService     services.UserService
-	articleService  services.ArticleService
-	categoryService services.CategoryService
-	fileService     services.FileService
-	commentService  services.CommentService
-	likeService     services.LikeService
-	favoriteService services.FavoriteService
-	adminService    services.AdminService
-	
+	userRepo        repositories.UserRepository
+	articleRepo     repositories.ArticleRepository
+	categoryRepo    repositories.CategoryRepository
+	fileRepo        repositories.FileRepository
+	commentRepo     repositories.CommentRepository
+	articleLikeRepo repositories.ArticleLikeRepository
+	commentLikeRepo repositories.CommentLikeRepository
+	favoriteRepo    repositories.FavoriteRepository
+
+	// Services
+	userService      services.UserService
+	articleService   services.ArticleService
+	categoryService  services.CategoryService
+	fileService      services.FileService
+	commentService   services.CommentService
+	likeService      services.LikeService
+	favoriteService  services.FavoriteService
+	adminService     services.AdminService
+	adminInitService *services.AdminInitService
+
 	// Utils
-	fileUtils   *utils.FileUtils
-	
+	fileUtils *utils.FileUtils
+
 	// Controllers
 	authController     *controllers.AuthController
 	userController     *controllers.UserController
@@ -68,7 +69,7 @@ func (c *Container) InitRepositories() {
 func (c *Container) InitServices() {
 	cfg := config.GetConfig()
 	c.config = cfg
-	
+
 	// 初始化文件工具
 	c.fileUtils = utils.NewFileUtils(
 		cfg.Upload.Path,
@@ -76,7 +77,7 @@ func (c *Container) InitServices() {
 		cfg.Upload.MaxSize,
 		cfg.Upload.AllowedTypes,
 	)
-	
+
 	// 初始化Services
 	c.userService = services.NewUserService()
 	c.articleService = services.NewArticleService()
@@ -86,7 +87,8 @@ func (c *Container) InitServices() {
 	c.likeService = services.NewLikeService()
 	c.favoriteService = services.NewFavoriteService()
 	c.adminService = services.NewAdminService()
-	
+	c.adminInitService = services.NewAdminInitService(c.userRepo)
+
 }
 
 // InitControllers 初始化Controller层
@@ -101,7 +103,6 @@ func (c *Container) InitControllers() {
 	c.favoriteController = controllers.NewFavoriteController(c.favoriteService)
 	c.adminController = controllers.NewAdminController(c.adminService)
 }
-
 
 // GetControllers 获取所有Controller
 func (c *Container) GetControllers() (
@@ -118,3 +119,7 @@ func (c *Container) GetControllers() (
 	return c.authController, c.userController, c.articleController, c.categoryController, c.fileController, c.commentController, c.likeController, c.favoriteController, c.adminController
 }
 
+// GetAdminInitService 获取管理员初始化服务
+func (c *Container) GetAdminInitService() *services.AdminInitService {
+	return c.adminInitService
+}

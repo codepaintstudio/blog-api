@@ -56,8 +56,8 @@ rate_limit:
   enabled: true
   requests_per_minute: 60
   burst: 10
-  ip_limit: 100      # IP级别限流：100次/分钟
-  user_limit: 1000   # 用户级别限流：1000次/小时
+  ip_limit: 100 # IP级别限流：100次/分钟
+  user_limit: 1000 # 用户级别限流：1000次/小时
 
 cors:
   allow_origins:
@@ -83,3 +83,9 @@ cache:
   default_ttl: "10m"
   redis_key_prefix: "blog_api:"
   cleanup_interval: "1h"
+
+admin:
+  username: username
+  email: email
+  nickname: nickname
+  password: password

@@ -33,7 +33,7 @@ type FileResponse struct {
 	Size         int64  `json:"size"`
 	MimeType     string `json:"mime_type"`
 	URL          string `json:"url"`
-	Hash         string `json:"hash,omitempty"` // 可选返回哈希值
+	Hash         string `json:"hash,omitempty"`      // 可选返回哈希值
 	RefCount     int    `json:"ref_count,omitempty"` // 可选返回引用计数
 	CreatedAt    string `json:"created_at"`
 }
@@ -41,7 +41,7 @@ type FileResponse struct {
 // Upload 上传文件
 // @Summary 上传文件
 // @Description 上传图片文件，支持去重机制
-// @Tags 文件管理
+// @Tags 文件
 // @Accept multipart/form-data
 // @Produce json
 // @Param file formData file true "上传的文件"
@@ -49,8 +49,8 @@ type FileResponse struct {
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Security BearerToken
-// @Router /api/v1/files/upload [post]
+// @Security BearerAuth
+// @Router /files/upload [post]
 func (c *FileController) Upload(ctx *gin.Context) {
 	// 获取当前用户ID
 	userID, exists := ctx.Get("user_id")
@@ -90,15 +90,15 @@ func (c *FileController) Upload(ctx *gin.Context) {
 // GetFile 获取文件信息
 // @Summary 获取文件信息
 // @Description 根据文件ID获取文件详细信息
-// @Tags 文件管理
+// @Tags 文件
 // @Produce json
 // @Param id path int true "文件ID"
 // @Success 200 {object} response.Response{data=FileResponse}
 // @Failure 400 {object} response.Response
 // @Failure 404 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Security BearerToken
-// @Router /api/v1/files/{id} [get]
+// @Security BearerAuth
+// @Router /files/{id} [get]
 func (c *FileController) GetFile(ctx *gin.Context) {
 	// 获取文件ID
 	idStr := ctx.Param("id")
@@ -134,7 +134,7 @@ func (c *FileController) GetFile(ctx *gin.Context) {
 // DeleteFile 删除文件
 // @Summary 删除文件
 // @Description 删除文件（减少引用计数）
-// @Tags 文件管理
+// @Tags 文件
 // @Produce json
 // @Param id path int true "文件ID"
 // @Success 200 {object} response.Response
@@ -143,8 +143,8 @@ func (c *FileController) GetFile(ctx *gin.Context) {
 // @Failure 403 {object} response.Response
 // @Failure 404 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Security BearerToken
-// @Router /api/v1/files/{id} [delete]
+// @Security BearerAuth
+// @Router /files/{id} [delete]
 func (c *FileController) DeleteFile(ctx *gin.Context) {
 	// 获取当前用户ID
 	userID, exists := ctx.Get("user_id")
@@ -173,7 +173,7 @@ func (c *FileController) DeleteFile(ctx *gin.Context) {
 // GetUserFiles 获取用户文件列表
 // @Summary 获取用户文件列表
 // @Description 分页获取当前用户的文件列表
-// @Tags 文件管理
+// @Tags 文件
 // @Produce json
 // @Param page query int false "页码" default(1)
 // @Param size query int false "每页数量" default(20)
@@ -181,8 +181,8 @@ func (c *FileController) DeleteFile(ctx *gin.Context) {
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Security BearerToken
-// @Router /api/v1/files [get]
+// @Security BearerAuth
+// @Router /files [get]
 func (c *FileController) GetUserFiles(ctx *gin.Context) {
 	// 获取当前用户ID
 	userID, exists := ctx.Get("user_id")
@@ -230,7 +230,7 @@ func (c *FileController) GetUserFiles(ctx *gin.Context) {
 // ServeFile 提供静态文件服务
 // @Summary 访问静态文件
 // @Description 通过文件名访问上传的静态文件
-// @Tags 文件管理
+// @Tags 文件
 // @Produce octet-stream
 // @Param filename path string true "文件名"
 // @Success 200 {file} file
@@ -238,7 +238,7 @@ func (c *FileController) GetUserFiles(ctx *gin.Context) {
 // @Router /uploads/{filename} [get]
 func (c *FileController) ServeFile(ctx *gin.Context) {
 	filename := ctx.Param("filename")
-	
+
 	// 这个方法将在路由中直接使用gin.Static处理
 	// 这里只是用于Swagger文档生成
 	ctx.File("./uploads/" + filename)
