@@ -73,17 +73,17 @@ func LoadConfig(configPath string) (*Config, error) {
 
 	absPath, err := filepath.Abs(configPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get absolute path: %w", err)
+		return nil, fmt.Errorf("获取绝对路径失败: %w", err)
 	}
 
 	data, err := os.ReadFile(absPath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read config file %s: %w", absPath, err)
+		return nil, fmt.Errorf("读取配置文件 %s 失败: %w", absPath, err)
 	}
 
 	var config Config
 	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
+		return nil, fmt.Errorf("解析配置失败: %w", err)
 	}
 
 	GlobalConfig = &config

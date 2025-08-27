@@ -11,54 +11,54 @@ import (
 )
 
 func main() {
-	log.Println("Blog API Server starting...")
-	
-	// Initialize configuration
+	log.Println("博客服务启动中...")
+
+	// 初始化配置
 	_, err := config.LoadConfig("")
 	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
+		log.Fatalf("加载环境变量失败: %v", err)
 	}
-	log.Println("Configuration loaded successfully")
-	
-	// Initialize database connections
+	log.Println("配置加载成功")
+
+	// 初始化数据库连接
 	if err := database.InitMySQL(); err != nil {
-		log.Fatalf("Failed to initialize MySQL: %v", err)
+		log.Fatalf("MYSQL 初始化失败: %v", err)
 	}
-	
+
 	if err := database.InitRedis(); err != nil {
-		log.Fatalf("Failed to initialize Redis: %v", err)
+		log.Fatalf("REDIS 初始化失败: %v", err)
 	}
-	
-	// Setup graceful shutdown
+
+	// 设置优雅关闭
 	setupGracefulShutdown()
-	
-	// TODO: Initialize routes and middleware
-	// TODO: Start server
-	
-	log.Println("Blog API Server is ready")
-	
-	// Wait for shutdown signal
+
+	// TODO: 初始化路由和中间件
+	// TODO: 启动服务器
+
+	log.Println("博客API服务器已就绪")
+
+	// 等待关闭信号
 	waitForShutdown()
 }
 
 func setupGracefulShutdown() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	
+
 	go func() {
 		<-c
-		log.Println("Shutting down server...")
-		
-		// Close database connections
+		log.Println("正在关闭服务器...")
+
+		// 关闭数据库连接
 		if err := database.CloseMySQL(); err != nil {
-			log.Printf("Error closing MySQL: %v", err)
+			log.Printf("关闭MySQL时出错: %v", err)
 		}
-		
+
 		if err := database.CloseRedis(); err != nil {
-			log.Printf("Error closing Redis: %v", err)
+			log.Printf("关闭Redis时出错: %v", err)
 		}
-		
-		log.Println("Server shutdown complete")
+
+		log.Println("服务器关闭完成")
 		os.Exit(0)
 	}()
 }

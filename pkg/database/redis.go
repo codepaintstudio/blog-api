@@ -14,7 +14,7 @@ var RedisClient *redis.Client
 func InitRedis() error {
 	cfg := config.GetConfig()
 	if cfg == nil {
-		return fmt.Errorf("config not loaded")
+		return fmt.Errorf("配置未加载")
 	}
 
 	RedisClient = redis.NewClient(&redis.Options{
@@ -26,10 +26,10 @@ func InitRedis() error {
 	ctx := context.Background()
 	_, err := RedisClient.Ping(ctx).Result()
 	if err != nil {
-		return fmt.Errorf("failed to connect to Redis: %w", err)
+		return fmt.Errorf("连接Redis失败: %w", err)
 	}
 
-	log.Println("Redis connected successfully")
+	log.Println("Redis连接成功")
 	return nil
 }
 

@@ -16,7 +16,7 @@ var DB *gorm.DB
 func InitMySQL() error {
 	cfg := config.GetConfig()
 	if cfg == nil {
-		return fmt.Errorf("config not loaded")
+		return fmt.Errorf("配置未加载")
 	}
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
@@ -39,12 +39,12 @@ func InitMySQL() error {
 		Logger: logger.Default.LogMode(logLevel),
 	})
 	if err != nil {
-		return fmt.Errorf("failed to connect to MySQL: %w", err)
+		return fmt.Errorf("连接MySQL失败: %w", err)
 	}
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		return fmt.Errorf("failed to get underlying sql.DB: %w", err)
+		return fmt.Errorf("获取底层sql.DB失败: %w", err)
 	}
 
 	sqlDB.SetMaxIdleConns(10)
@@ -52,7 +52,7 @@ func InitMySQL() error {
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	DB = db
-	log.Println("MySQL connected successfully")
+	log.Println("MySQL连接成功")
 	return nil
 }
 
