@@ -85,6 +85,9 @@ func setupAPIRoutes(
 ) {
 	// 静态文件服务
 	r.Static("/uploads", "./uploads")
+	
+	// 文档静态文件服务
+	r.Static("/docs", "./static/docs")
 
 	// API版本分组
 	v1 := r.Group("/api/v1")

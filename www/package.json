@@ -1,0 +1,17 @@
+{
+  "name": "blog-api-docs",
+  "version": "1.0.0",
+  "description": "Documentation for Blog API",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "docs:build-for-api": "vitepress build docs && rm -rf ../../static/docs/* && cp -r docs/.vitepress/dist/* ../../static/docs/ 2>/dev/null || echo 'Build completed - may need to run with proper permissions'"
+  },
+  "devDependencies": {
+    "vitepress": "^1.4.1",
+    "vue": "^3.5.0"
+  },
+  "dependencies": {}
+}

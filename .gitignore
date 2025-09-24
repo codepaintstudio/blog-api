@@ -39,6 +39,12 @@ uploads/
 tmp/
 temp/
 
+# Node.js and documentation build artifacts
+/dist
+node_modules/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+
 # Editor/IDE
 # .idea/
 # .vscode/
