@@ -30,7 +30,7 @@ vim configs/config.yaml
 go run cmd/server/main.go
 ```
 
-服务启动后，访问 http://localhost:8080/swagger/index.html 查看 API 文档。
+
 
 ## 功能特性
 
@@ -63,12 +63,12 @@ go run cmd/server/main.go
 - **语言框架**: Go + Gin
 - **数据存储**: MySQL + Redis
 - **认证方式**: JWT Token
-- **文档工具**: Swagger
+
 - **架构模式**: 三层架构（Controller-Service-Repository）
 
 ## API 文档
 
-启动项目后访问：http://localhost:8080/swagger/index.html
+
 
 包含 42 个接口，涵盖 10 个功能模块的完整 API 文档。
 

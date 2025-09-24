@@ -1,23 +1,4 @@
 // Package main Blog API
-// @title Blog API
-// @version 1.0
-// @description 一个专为前端开发学习者提供的博客后端API系统
-// @termsOfService https://github.com/codepaintstudio/blog-api
-//
-// @contact.name API Support
-// @contact.url https://github.com/codepaintstudio/blog-api/issues
-// @contact.email support@example.com
-//
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-//
-// @host localhost:8080
-// @BasePath /api/v1
-//
-// @securityDefinitions.apikey BearerAuth
-// @in header
-// @name Authorization
-// @description Type "Bearer" followed by a space and JWT token.
 package main
 
 import (
@@ -98,7 +79,6 @@ func main() {
 	logger.Info("博客API服务器已启动",
 		logger.String("address", fmt.Sprintf("http://localhost:%d", cfg.Server.Port)),
 		logger.String("mode", cfg.Server.Mode),
-		logger.String("swagger", fmt.Sprintf("http://localhost:%d/swagger/index.html", cfg.Server.Port)),
 	)
 
 	// 启动服务器

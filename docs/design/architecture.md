@@ -18,7 +18,7 @@
 - **数据库**: MySQL 8.0
 - **缓存**: Redis 6.0
 - **认证**: JWT
-- **文档**: Swagger
+
 
 ### 关键组件
 
@@ -48,7 +48,7 @@ blog-api/
 │   ├── logger/           # 日志系统
 │   └── response/         # 响应格式
 ├── configs/              # 配置文件
-├── docs/                 # 文档和Swagger
+├── docs/                 # 文档
 ├── uploads/              # 文件存储
 └── logs/                 # 日志文件
 ```

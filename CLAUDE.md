@@ -18,7 +18,7 @@ cp configs/config.example.yaml configs/config.yaml
 go run cmd/server/main.go
 ```
 
-访问 http://localhost:8080/swagger/index.html 查看 API 文档。
+
 
 ## 核心功能
 
@@ -91,7 +91,7 @@ blog-api/
 - `POST /api/v1/articles/:id/like` - 文章点赞
 - ...
 
-完整接口文档：http://localhost:8080/swagger/index.html
+
 
 ## 数据库设计
 

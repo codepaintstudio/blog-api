@@ -10,10 +10,6 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-
-	_ "blog-api/docs" // 导入生成的swagger文档
 )
 
 // SetupRoutes 设置路由
@@ -38,9 +34,6 @@ func SetupRoutes(
 
 	// 设置API路由
 	setupAPIRoutes(r, authController, userController, articleController, categoryController, fileController, commentController, likeController, favoriteController, adminController)
-
-	// 设置Swagger文档路由
-	setupSwagger(r)
 
 	return r
 }
@@ -237,25 +230,9 @@ func setupAPIRoutes(
 	}
 }
 
-// setupSwagger 设置Swagger文档路由
-func setupSwagger(r *gin.Engine) {
-	// Swagger文档路由
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	// 重定向根路径到Swagger文档
-	r.GET("/", func(c *gin.Context) {
-		c.Redirect(302, "/swagger/index.html")
-	})
-}
 
 // healthCheck 健康检查接口
-// @Summary 健康检查
-// @Description 检查服务是否正常运行
-// @Tags 系统
-// @Accept json
-// @Produce json
-// @Success 200 {object} response.Response
-// @Router /health [get]
 func healthCheck(c *gin.Context) {
 	response.SuccessWithMessage(c, gin.H{
 		"status":    "ok",

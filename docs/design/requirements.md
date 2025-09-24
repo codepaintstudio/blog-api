@@ -59,7 +59,7 @@
 - 配置文件管理（YAML）
 - 结构化日志系统
 - 优雅关闭机制
-- 完整的 API 文档（Swagger）
+
 
 ## 数据模型
 
@@ -167,7 +167,7 @@ go run cmd/server/main.go
 ### 访问地址
 
 - API 服务：http://localhost:8080
-- 接口文档：http://localhost:8080/swagger/index.html
+
 - 健康检查：http://localhost:8080/api/v1/health
 
 ---
